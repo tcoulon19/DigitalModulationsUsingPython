@@ -209,5 +209,32 @@ def fft_example_2():
     plt.ylabel('Amplitude') # y-axis label
     plt.savefig('fft_example_2_im4.png') # display the figure
 
-fft_example_2()
+
+def welch_demo():
+
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from essentials import plotWelchPSD
+
+    # Create sample signal
+    A = 0.5 # amplitude of the cosine wave
+    fc=10 # frequency of the cosine wave in Hz
+    phase=30 # desired phase shift of the cosine in degrees
+    fs=300*fc # sampling frequency with oversampling factor 32
+    t=np.arange(start = 0,stop = 2,step = 1/fs) # 2 seconds duration
+
+    phi = phase*np.pi/180; # convert phase shift in degrees in radians
+    x=A*np.cos(2*np.pi*fc*t+phi) # time domain signal with phase shift
+
+    plt.figure(0)
+    plt.plot(t,x) # plot using pyplot library from matplotlib package
+    plt.title('Time domain') # plot title
+    plt.xlabel('t (s)') # x-axis label
+    plt.ylabel('Amplitude') # y-axis label
+    plt.savefig('welch_example_im1.png') # display the figure
+
+    plotWelchPSD(x, fs, fc)
+
+welch_demo()
+
 
