@@ -1,21 +1,65 @@
-def square_wave(f,overSampRate,nCyl):
-    """
-    Generate square wave signal with the following parameters
-    Parameters:
-    f : frequency of square wave in Hertz
-    overSampRate : oversampling rate (integer)
-    nCyl : number of cycles of square wave to generate
-    Returns:
-    (t,g) : time base (t) and the signal g(t) as tuple
-    Example:
-    f=10; overSampRate=30;nCyl = 5;
-    (t,g) = square_wave(f,overSampRate,nCyl)
-    """
-    fs = overSampRate*f # sampling frequency
-    t = np.arange(0,nCyl*1/f-1/fs,1/fs) # time base
-    g = np.sign(np.sin(2*np.pi*f*t)) # replace with cos if a cosine wave is desired
+def sine_wave_demo():
 
-    return (t,g) # return time base and signal g(t) as tuple
+    """
+    Simulate a sinusoidal signal with given sampling rate
+    """
+    import numpy as np
+    import matplotlib.pyplot as plt # library for plotting
+    from signalgen import sine_wave # import the function
+
+    f = 10 #frequency = 10 Hz
+    overSampRate = 30 #oversammpling rate
+    phase = 1/3*np.pi #phase shift in radians
+    nCyl = 5 # desired number of cycles of the sine wave
+    (t,g) = sine_wave(f,overSampRate,phase,nCyl) #function call
+
+    plt.plot(t,g) # plot using pyplot library from matplotlib package
+    plt.title('Sine wave f='+str(f)+' Hz') # plot title
+    plt.xlabel('Time (s)') # x-axis label
+    plt.ylabel('Amplitude') # y-axis label
+    plt.savefig('Sine wave.png') # display the figure
+
+
+def scipy_square_wave():
+
+    """
+    Generate a square wave with given sampling rate
+    """
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy import signal
+
+    f = 10
+    overSampRate = 30 # oversampling rate
+    nCyl = 5 # number of cycles to generate
+    fs = overSampRate*f # sampling frequency
+    t = np.arange(start=0,stop=nCyl*1/f,step=1/fs) # time base
+    g = signal.square(2 * np.pi * f * t, duty = 0.2)
+    plt.plot(t,g); plt.show()
+
+    plt.plot(t,g) # plot using pyplot library from matplotlib package
+    plt.title('Square wave f='+str(f)+' Hz') # plot title
+    plt.xlabel('Time (s)') # x-axis label
+    plt.ylabel('Amplitude') # y-axis label
+    plt.savefig('Square wave.png') # display the figure
+
+
+def rectangular_pulse_demo():
+
+    from signalgen import rect_pulse
+    import matplotlib.pyplot as plt 
+
+    A = 1
+    fs = 500
+    T = .2
+    (t,g) = rect_pulse(A, fs, T)
+
+    plt.plot(t,g) # plot using pyplot library from matplotlib package
+    plt.title('Rectangular pulse') # plot title
+    plt.xlabel('Time (s)') # x-axis label
+    plt.ylabel('Amplitude') # y-axis label
+    plt.savefig('Rect pulse.png') # display the figure
+
 
 def chirp_demo():
     """
@@ -24,14 +68,21 @@ def chirp_demo():
     import numpy as np
     import matplotlib.pyplot as plt
     from scipy.signal import chirp
+
     fs = 500 # sampling frequency in Hz
     t =np.arange(start = 0, stop = 1,step = 1/fs) #total time base from 0 to 1 second
     g = chirp(t, f0=1, t1=0.5, f1=20, phi=0, method='linear')
-    plt.plot(t,g); plt.show()
+
+    plt.plot(t,g) # plot using pyplot library from matplotlib package
+    plt.title('Chirp') # plot title
+    plt.xlabel('Time (s)') # x-axis label
+    plt.ylabel('Amplitude') # y-axis label
+    plt.savefig('Chirp signal.png') # display the figure
+
 
 def fft_example_1():
 
-    from scipy.fftpack import fft, ifft
+    from scipy.fftpack import fft, ifft, fftshift
     import numpy as np
     import matplotlib.pyplot as plt
 
@@ -40,44 +91,36 @@ def fft_example_1():
     t=np.arange(start = 0,stop = 2,step = 1/fs) # 2 seconds duration
     x=np.cos(2*np.pi*fc*t) # time domain signal (real number)
 
-    fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1)
-    ax1.plot(t,x) #plot the signal
-    ax1.set_title('$x[n]= cos(2 \pi 10 t)$')
-    ax1.set_xlabel('$t=nT_s$')
-    ax1.set_ylabel('$x[n]$')
+    plt.figure(0)
+    plt.plot(t,x) # plot using pyplot library from matplotlib package
+    plt.title('Time domain') # plot title
+    plt.xlabel('Time (s)') # x-axis label
+    plt.ylabel('Amplitude') # y-axis label
+    plt.savefig('fft_example_1_im1.png') # display the figure
 
-    N=256 # FFT size
-    X = fft(x,N) # N-point complex DFT, output contains DC at index 0
-    # Nyquist frequency at N/2 th index positive frequencies from
-    # index 2 to N/2-1 and negative frequencies from index N/2 to N-1
+    # # fft without fftshift
+    # N=fs # FFT size
+    # X = fft(x,N) # N-point complex DFT, output contains DC at index 0
+    # # Nyquist frequency at N/2 th index positive frequencies from
+    # # index 2 to N/2-1 and negative frequencies from index N/2 to N-1
+    # # calculate frequency bins with FFT
+    # df=fs/N # frequency resolution
+    # sampleIndex = np.arange(start = 0,stop = N) # raw index for FFT plot
+    # f=sampleIndex*df # x-axis index converted to frequencies
 
-    # calculate frequency bins with FFT
+    # fft with fftshift
+    N=fs # FFT size
+    X = fftshift(fft(x,N)) # N-point complex DFT, output contains DC at index 0
     df=fs/N # frequency resolution
-    sampleIndex = np.arange(start = 0,stop = N) # raw index for FFT plot
+    sampleIndex = np.arange(start = -N//2,stop = N//2) # raw index for FFT plot
     f=sampleIndex*df # x-axis index converted to frequencies
 
-    ax2.stem(sampleIndex,abs(X),use_line_collection=True) # sample values on x-axis
-    ax2.set_title('X[k]');ax2.set_xlabel('k');ax2.set_ylabel('|X(k)|');
-    ax3.stem(f,abs(X),use_line_collection=True); # x-axis represent frequencies
-    ax3.set_title('X[f]');ax3.set_xlabel('frequencies (f)');ax3.set_ylabel('|X(f)|');
-    fig.show()
-
-    from scipy.fftpack import fftshift
-    #re-order the index for emulating fftshift
-    sampleIndex = np.arange(start = -N//2,stop = N//2) # // for integer division
-    X1 = X[sampleIndex] #order frequencies without using fftShift
-    X2 = fftshift(X) # order frequencies by using fftshift
-    df=fs/N # frequency resolution
-    f=sampleIndex*df # x-axis index converted to frequencies
-
-    #plot ordered spectrum using the two methods
-    fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)#subplots creation
-    ax1.stem(sampleIndex,abs(X1), use_line_collection=True)# result without fftshift
-    ax1.stem(sampleIndex,abs(X2),'r',use_line_collection=True) #result with fftshift
-    ax1.set_xlabel('k');ax1.set_ylabel('|X(k)|')
-    ax2.stem(f,abs(X1), use_line_collection=True)
-    ax2.stem(f,abs(X2),'r' , use_line_collection=True)
-    ax2.set_xlabel('frequencies (f)'),ax2.set_ylabel('|X(f)|'); fig.show()
+    plt.figure(1)
+    plt.stem(f,abs(X)) # plot using pyplot library from matplotlib package
+    plt.title('Freuency domain') # plot title
+    plt.xlabel('f (Hz)') # x-axis label
+    plt.ylabel('Amplitude') # y-axis label
+    plt.savefig('fft_example_1_im2.png') # display the figure
 
 
 def fft_example_2():
