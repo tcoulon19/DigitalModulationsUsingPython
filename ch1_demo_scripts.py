@@ -218,7 +218,7 @@ def welch_demo():
 
     # Create sample signal
     A = 0.5 # amplitude of the cosine wave
-    fc=10 # frequency of the cosine wave in Hz
+    fc=4000 # frequency of the cosine wave in Hz
     phase=30 # desired phase shift of the cosine in degrees
     fs=300*fc # sampling frequency with oversampling factor 32
     t=np.arange(start = 0,stop = 2,step = 1/fs) # 2 seconds duration
