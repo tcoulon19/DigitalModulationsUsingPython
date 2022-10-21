@@ -235,6 +235,24 @@ def welch_demo():
 
     plotWelchPSD(x, fs, fc)
 
-fft_example_2()
+
+# Compute total power using norm function
+def power_using_norm():
+
+    import numpy as np
+    from numpy.linalg import norm
+
+    A=1 #Amplitude of sine wave
+    fc=100 #Frequency of sine wave
+    fs=3000 # Sampling frequency - oversampled by the rate of 30
+    nCyl=3 # Number of cycles of the sinewave
+    t=np.arange(start = 0,stop = nCyl/fc,step = 1/fs) #Time base
+    x=-A*np.sin(2*np.pi*fc*t) # Sinusoid
+
+    L = len(x)
+    P = (norm(x)**2)/L
+    print('Power of the Signal from Time domain {:0.4f}'.format(P))
+
+power_using_norm()
 
 
