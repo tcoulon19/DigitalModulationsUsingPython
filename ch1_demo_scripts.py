@@ -235,6 +235,6 @@ def welch_demo():
 
     plotWelchPSD(x, fs, fc)
 
-welch_demo()
+fft_example_2()
 
 
