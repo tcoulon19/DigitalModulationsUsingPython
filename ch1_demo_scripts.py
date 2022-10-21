@@ -236,7 +236,7 @@ def welch_demo():
     plotWelchPSD(x, fs, fc)
 
 
-# Compute total power using norm function
+# Compute total power using norm function and verify total power in frequency domain
 def power_using_norm():
 
     import numpy as np
@@ -253,6 +253,15 @@ def power_using_norm():
     P = (norm(x)**2)/L
     print('Power of the Signal from Time domain {:0.4f}'.format(P))
 
-power_using_norm()
+    from scipy.fftpack import fft, fftshift
+    NFFT = L
+    X = fftshift(fft(x,NFFT))
+    Px = X*np.conj(X)/(L**2) # Power of each frequency component
+    print(sum(abs(Px)))
+
+
+
+
+
 
 
