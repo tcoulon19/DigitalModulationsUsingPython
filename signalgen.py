@@ -1,6 +1,7 @@
 import numpy as np
 
-# Program 1
+
+# Sine wave
 def sine_wave(f, overSampRate, phase, nCyl):
 
     '''
@@ -16,7 +17,8 @@ def sine_wave(f, overSampRate, phase, nCyl):
     
     return (t, g)
 
-# Program 3
+
+# Square wave
 def square_wave(f, overSampRate, nCyl):
 
     fs = overSampRate*f # sampling frequency
@@ -25,7 +27,8 @@ def square_wave(f, overSampRate, nCyl):
 
     return (t,g)
 
-# Program 5
+
+# Rectangular pulse
 def rect_pulse(A, fs, T):
 
     """
@@ -41,7 +44,8 @@ def rect_pulse(A, fs, T):
     g = A* rect
     return (t,g)
 
-# Program 6
+
+# Gaussian pulse
 def gaussian_pulse(fs, sigma):
 
     t = np.arange(-.5, .5, 1/fs)

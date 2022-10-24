@@ -147,6 +147,7 @@ def fft_example_1():
     plt.savefig('fft_example_1_im2.png') # display the figure
 
 
+# Take FFT, extract amplitude and phase info, re-construct in time domain
 def fft_example_2():
 
     from scipy.fftpack import fft, ifft, fftshift, ifftshift
@@ -210,6 +211,7 @@ def fft_example_2():
     plt.savefig('fft_example_2_im4.png') # display the figure
 
 
+# Estimate PSD with Welch method
 def welch_demo():
 
     import matplotlib.pyplot as plt
@@ -258,6 +260,8 @@ def power_using_norm():
     X = fftshift(fft(x,NFFT))
     Px = X*np.conj(X)/(L**2) # Power of each frequency component
     print(sum(abs(Px)))
+
+
 
 
 
