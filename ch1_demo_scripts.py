@@ -346,9 +346,93 @@ def extract_envelope_phase():
     plt.ylabel('$cos[\omega(t)]$')
     plt.savefig('extract_envelope_phase_im2.png')
 
-extract_envelope_phase()
 
+# Demonstrate phase demodulation using Hilbert transformation
+def hilbert_phase_demod():
 
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy.signal import hilbert
+    from essentials import analytic_signal
+
+    fc = 210 # carrier frequency
+    fm = 10 # frequency of modulating signal
+    alpha = 1 # amplitude of modulating signal
+    theta = np.pi/4 # phase offset of modulating signal
+    beta = np.pi/5 # constant carrier phase offset
+    # Set true if receiver knows carrier frequency and phase offset
+    receiverKnowsCarrier = True
+
+    fs = 8*fc # sampling frequency
+    duration = .5 # duration of signal
+    t = np.arange(0,duration,1/fs)
+
+    # Phase modulation
+    m_t = alpha*np.sin(2*np.pi*fm*t + theta) # modulating signal
+    x = np.cos(2*np.pi*fc*t + beta + m_t) # modulated signal
+
+    plt.figure(0)
+    plt.plot(t, m_t)
+    plt.title('Modulating signal')
+    plt.xlabel('t')
+    plt.ylabel('m(t)')
+    plt.savefig('hilbert_phase_demod_im1.png')
+
+    plt.figure(1)
+    plt.plot(t, x)
+    plt.title('Modulated signal')
+    plt.xlabel('t')
+    plt.ylabel('x(t)')
+    plt.savefig('hilbert_phase_demod_im2.png')
+
+    # Add AWGN noise to the transmitted signal
+    mu = 0; sigma = .1 # noise mean and variance
+    n = mu + sigma*np.random.normal(len(t)) # AWGN noise
+    r = x + n # noisy received signal
+
+    # plt.figure(2)
+    # plt.plot(t, r)
+    # plt.title('Modulated signal with noise')
+    # plt.xlabel('t')
+    # plt.ylabel('x(t)')
+    # plt.savefig('hilbert_phase_demod_im3.png')
+
+    # Demodulation of the noisy Phase Modulated signal
+    z = hilbert(r) # form analytical signal from received vector
+    inst_phase = np.unwrap(np.angle(z)) # instantaneous phase
+
+    if receiverKnowsCarrier: # If receiver knows the carrier freq/phase perfectly
+        offsetTerm = 2*np.pi*fc*t + beta
+    else: # else, estimate the subtraction term
+        p = np.polyfit(x=t, y=inst_phase, deg=1) # linear fit instantaneous phase
+        estimated = np.polyval(p,t)
+        offsetTerm = estimated
+
+    demodulated = inst_phase - offsetTerm
+
+    # plt.figure(2)
+    # plt.plot(t, inst_phase)
+    # plt.title('inst_phase')
+    # plt.xlabel('t')
+    # plt.ylabel('inst_phase')
+    # plt.savefig('hilbert_phase_demod_im3.png')
+
+    # plt.figure(3)
+    # plt.plot(t, offsetTerm)
+    # plt.title('offsetTerm')
+    # plt.xlabel('t')
+    # plt.ylabel('offset term')
+    # plt.savefig('hilbert_phase_demod_im4.png')
+
+    # plt.figure(4)
+    # plt.plot(t, demodulated)
+    # plt.title('demodulated')
+    # plt.xlabel('t')
+    # plt.ylabel('demodulated')
+    # plt.savefig('hilbert_phase_demod_im5.png')
+    
+
+hilbert_phase_demod()
 
 
 
