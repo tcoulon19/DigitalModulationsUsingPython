@@ -86,6 +86,23 @@ def convolve_with_fft(h,x,L):
     return y
 
 
+# Generate analytic signal using frequency domain approach
+def analytic_signal(x):
+    
+    '''
+    x: real-valued sampled signal
+    z: analytic signal of x
+    '''
+    import numpy as np
+    from scipy.fftpack import fft, ifft
+
+    N = len(x)
+    X = fft(x,N)
+    Z = np.hstack((X[0], 2*X[1:N//2], X[N//2], np.zeros(N//2-1)))
+    z = ifft(Z,N)
+
+    return z
+
 
 
 

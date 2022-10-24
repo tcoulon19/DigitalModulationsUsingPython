@@ -279,7 +279,36 @@ def compare_convolutions():
     y3 = np.convolve(h,x)
     print(f' y1 : {y1} \n y2 : {y2} \n y3 : {y3} \n')
 
-compare_convolutions()
+
+# Take analysic signal from real-valued signal, investigate analytic signal components
+def analytic_signal_demo():
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from essentials import analytic_signal
+
+    t = np.arange(0,.5,.001)
+    x = np.sin(2*np.pi*10*t) # real-valued f = 10 Hz
+
+    plt.figure(0)
+    plt.plot(t,x)
+    plt.title('x[n] - real-valued signal')
+    plt.xlabel('n')
+    plt.ylabel('x[n]')
+    plt.savefig('analytic_signal_demo_im1.png')
+
+    z = analytic_signal(x)
+
+    plt.figure(1)
+    plt.plot(t, np.real(z), 'k', label='Real(z[n])')
+    plt.plot(t, np.imag(z), 'r', label='Imag(z[n])')
+    plt.title('Components of analytic signal')
+    plt.xlabel('n')
+    plt.ylabel('$z_r[n]$ and $z_i[n]$')
+    plt.legend()
+    plt.savefig('analytic_signal_demo_im2.png')
+
+analytic_signal_demo()
 
 
 
