@@ -281,6 +281,7 @@ def compare_convolutions():
 
 
 # Take analysic signal from real-valued signal, investigate analytic signal components
+# Note: Can also use scipy's hilbert function. Note that the hilbert function full analytic signal, so take imag() to get actual hilbert transformation
 def analytic_signal_demo():
 
     import numpy as np
@@ -308,7 +309,44 @@ def analytic_signal_demo():
     plt.legend()
     plt.savefig('analytic_signal_demo_im2.png')
 
-analytic_signal_demo()
+
+# Demonstrate extraction of instantaneous amplitude and phase from analytic signal constructed from real-valued modulated signal
+def extract_envelope_phase():
+
+    import numpy as np
+    from scipy.signal import chirp
+    import matplotlib.pyplot as plt
+    from essentials import analytic_signal
+
+    fs = 600 # sampling frequency Hz
+    t = np.arange(0,1,1/fs)
+    a_t = 1.0 + .7 * np.sin(2.0*np.pi*3.0*t) # information signal
+    c_t = chirp(t, f0=20, t1=t[-1], f1=80, phi=0, method='linear') # index of -1 means last index
+    x = a_t * c_t # modulated signal
+
+    z = analytic_signal(x) # form the analytical signal
+    inst_amplitude = abs(z) # envelope extraction - calculing mag from complex plane
+    inst_phase = np.unwrap(np.angle(z)) # inst phase - arctan
+    inst_freq = np.diff(inst_phase)/(2*np.pi)*fs # inst frequency 
+
+    extracted_carrier = np.cos(inst_phase) # Regenerate carrier from instantaneous phase
+
+    plt.figure(0)
+    plt.plot(t,x)
+    plt.plot(t,inst_amplitude,'r')
+    plt.title('Modulated signal and extracted envelope')
+    plt.xlabel('n')
+    plt.ylabel('x(t) and |z(t)|')
+    plt.savefig('extract_envelope_phase_im1.png')
+
+    plt.figure(1)
+    plt.plot(t,extracted_carrier)
+    plt.title('Extracted carrier or TFS')
+    plt.xlabel('n')
+    plt.ylabel('$cos[\omega(t)]$')
+    plt.savefig('extract_envelope_phase_im2.png')
+
+extract_envelope_phase()
 
 
 
