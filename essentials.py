@@ -66,10 +66,26 @@ def convMatrix(h,p):
 # Convolution using Toeplitz matrix
 def my_convolve(h,x):
 
+    '''
+    Convolve h and x of abitrary lengths
+    h, x: numpy vectors
+    y: conolution of h and x
+    '''
+
     H = convMatrix(h, len(x))
     y = H @ x.transpose()
 
     return y
+
+
+# Convolution using FFT
+def convolve_with_fft(h,x,L):
+
+    from scipy.fftpack import fft, ifft
+    y = ifft(fft(x,L)*(fft(h,L)))
+    return y
+
+
 
 
 

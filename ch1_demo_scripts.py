@@ -104,6 +104,7 @@ def chirp_demo():
 
 
 # For this fft example, you have option to use fftshift. Comment/uncomment accordingly.
+# FFT size should be 2^L and large enough to cover sample size
 def fft_example_1():
 
     from scipy.fftpack import fft, ifft, fftshift
@@ -262,6 +263,23 @@ def power_using_norm():
     print(sum(abs(Px)))
 
 
+# Compare three convolution methods
+def compare_convolutions():
+
+    import numpy as np
+    from scipy.fftpack import fft, ifft
+    from essentials import my_convolve
+
+    x = np.random.normal(size = 7) + 1j*np.random.normal(size = 7) # normal random complex vectors
+    h = np.random.normal(size = 3) + 1j*np.random.normal(size = 3) # normal random complex vectors
+    L = len(x) + len(h) - 1 # length of convolution output
+
+    y1 = my_convolve(h,x) # Convolution using Toeplitz matrix
+    y2 = ifft(fft(x,L)*(fft(h,L))).T # Convolution using FFT
+    y3 = np.convolve(h,x)
+    print(f' y1 : {y1} \n y2 : {y2} \n y3 : {y3} \n')
+
+compare_convolutions()
 
 
 
