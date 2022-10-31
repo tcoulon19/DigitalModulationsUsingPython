@@ -21,16 +21,25 @@ def bpsk_mod(ak, L):
     return (s_bb, t)
 
 
-    # Baseband BPSK detection
-    def bpsk_demod(r_bb, L):
+# Baseband BPSK detection
+def bpsk_demod(r_bb, L):
 
-        import numpy as np
+    import numpy as np
 
-        x = np.real(r_bb) # I arm
-        x = np.convolve(x, np.ones(L)) # integrate for Tb duration (L samples)
-        x = x[L-1:-1:L] # I arm - sample at every L
-        ak_hat = (x > 0).transpose() # threshold detector
-        
-        return ak_hat 
+    '''
+    Function to demodulate a BPSK (baseband) signal
+    Parameters:
+        r_bb: received signal at the receiver front end (baseband)
+        L: oversampling factor (Tsym/Ts)
+    Returns:
+        ak_hat: detected/estimated binary stream
+    '''
+
+    x = np.real(r_bb) # I arm
+    x = np.convolve(x, np.ones(L)) # integrate for Tb duration (L samples)
+    x = x[L-1:-1:L] # I arm - sample at every L
+    ak_hat = (x > 0).transpose() # threshold detector
+    
+    return ak_hat 
 
 
