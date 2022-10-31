@@ -237,7 +237,7 @@ def welch_demo():
     plt.savefig('Ch1_images/welch_example_im1.png') # display the figure
 
     plotWelchPSD(x, fs, fc)
-welch_demo()
+
 
 # Compute total power using norm function and verify total power in frequency domain
 def power_using_norm():

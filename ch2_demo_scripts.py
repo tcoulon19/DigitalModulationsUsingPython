@@ -18,4 +18,50 @@ def BPSK_performance():
         (s_bb, t) = bpsk_mod(ak,L) # BPSK modulation (waveform) - baseband
         s = s_bb*np.cos(2*np.pi*Fc*t/Fs) # With carrier
         # Waveforms at the transmitter
+
+        plt.figure(0)
+        plt.plot(t, s_bb) # Baseband wfm zoomed to first 10 bits
+        plt.xlabel('t(s)')
+        plt.ylabel('$s_{bb}(t)$-baseband')
+        plt.savefig('Ch2_images/BPSK_performance_im1.png')
+
+        plt.figure(1)
+        plt.plot(t, s) # Transmitted wfm zoomed to first 10 bits
+        plt.xlabel('t(s)')
+        plt.ylabel('s(t)-with carrier')
+        plt.savefig('Ch2_images/BPSK_performance_im2.png')
+
+        plt.figure(2)
+        plt.plot(np.real(s_bb), np.imag(s_bb), 'o')
+        plt.xlim(-1.5,1.5)
+        plt.ylim(-1.5,1.5)
+        plt.savefig('Ch2_images/BPSK_performance_im3.png')
+
+        for i,EbN0 in enumerate(EbN0dB):
+            # Compute and add AWGN noise
+            r = awgn(s, EbN0, L) # Refer Chapter section 4.1
+
+            r_bb = r*np.cos(2*np.pi*Fc*t/Fs) # Recovered baseband signal
+            ak_hat = bpsk_demod(r_bb, L) # Baseband correlation demodulator
+            BER[i] = np.sum(ak !=ak_hat)/N # Bit Error Rate Computation
+
+            # Received signal waveform zoomed to first 10 bits, EbN0dB=9
+            if EbN0 == 9:
+                plt.figure(3)
+                plt.plot(t,r)
+                plt.xlabel('t(s)')
+                plt.ylabel('r(t)')
+                plt.xlim(0,10*L)
+                plt.savefig('Ch2_images/BPSK_performance_im4.png')
+
+        #----------Theoretical Bit/Symbol Error Rates----------
+        theoreticalBER = 0.5*erfc(np.sqrt(10**(EbN0dB/10))) # Theoretical bit error rate
         
+        #----------Plots----------
+        plt.figure(4)
+        plt.semilogy(EbN0dB, BER, 'k*', label='Simulated') # Simulated BER
+        plt.semilogy(EbN0dB, theoreticalBER, 'r-', label='Theoretical')
+        plt.xlabel('$E_b/N_0$ (dB)')
+        plt.ylabel('Probability of Bit Error - $P_b$')
+        plt.title('Probability of Bit Error for BPSK modulation')
+        plt.savefig('Ch2_images/BPSK_performance_im5.png')
