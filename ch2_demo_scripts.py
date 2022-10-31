@@ -85,4 +85,4 @@ def BPSK_performance():
         plt.title('Probability of Bit Error for BPSK modulation')
         plt.savefig('Ch2_images/BPSK_performance_im6.png')
 
-BPSK_performance()
+
