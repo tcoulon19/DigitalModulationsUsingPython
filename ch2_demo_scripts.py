@@ -87,7 +87,7 @@ def BPSK_performance():
 
 
 # Coherent detection of DEBPSK
-def DEBPSK():
+def DEBPSK_performance():
 
     import numpy as np
     import matplotlib.pyplot as plt
@@ -106,10 +106,10 @@ def DEBPSK():
 
     ak = np.random.randint(2, size = N) # Uniform random symbols from 0s and 1s
     bk = lfilter([1.0], [1.0,-1.0], ak) # IIR filter for differential encoding
-    bk = bk%2 # XOR operation is equivalent to modulo-2
+    bk = bk % 2 # XOR operation is equivalent to modulo-2
 
     [s_bb,t] = bpsk_mod(bk,L) # BPSK modulation (waveform) - baseband
-    s = s_bb*np.cos(2*np.pi*Fc*t/Fs) # DEBSK with carrier
+    s = s_bb*np.cos(2*np.pi*Fc*t/Fs) # DEBPSK with carrier
 
     for i, EbN0 in enumerate(EbN0dB):
 
@@ -136,5 +136,7 @@ def DEBPSK():
     plt.xlabel('$E_b/N_0$ (dB)')
     plt.ylabel('Probability of Bit Error - $P_b$')
     plt.title('Probability of Bit Error for DEBPSK and BPSK over AWGN')
-    plt.savefig('Ch2_images/DEBPSK.png')
+    plt.savefig('Ch2_images/DEBPSK_performance.png')
+
+DEBPSK_performance()
 
