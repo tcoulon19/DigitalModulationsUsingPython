@@ -17,7 +17,7 @@ def plotWelchPSD(x, fs, fc, ax = None, color = 'b', label = None):
     plt.title('Welch plot')
     plt.xlabel('Frequency (Hz)')
     plt.ylabel('PSD (dB/Hz)')
-    plt.savefig('welch_example_im2.png')
+    plt.savefig('Ch1_images/welch_example_im2.png')
 
 
 # Convolution by brute force

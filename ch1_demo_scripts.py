@@ -17,7 +17,7 @@ def sine_wave_demo():
     plt.title('Sine wave f='+str(f)+' Hz') # plot title
     plt.xlabel('Time (s)') # x-axis label
     plt.ylabel('Amplitude') # y-axis label
-    plt.savefig('Sine wave.png') # display the figure
+    plt.savefig('Ch1_images/Sine wave.png') # display the figure
 
 
 def scipy_square_wave():
@@ -41,7 +41,7 @@ def scipy_square_wave():
     plt.title('Square wave f='+str(f)+' Hz') # plot title
     plt.xlabel('Time (s)') # x-axis label
     plt.ylabel('Amplitude') # y-axis label
-    plt.savefig('Square wave.png') # display the figure
+    plt.savefig('Ch1_images/Square wave.png') # display the figure
 
 
 def rectangular_pulse_demo():
@@ -58,7 +58,7 @@ def rectangular_pulse_demo():
     plt.title('Rectangular pulse') # plot title
     plt.xlabel('Time (s)') # x-axis label
     plt.ylabel('Amplitude') # y-axis label
-    plt.savefig('Rect pulse.png') # display the figure
+    plt.savefig('Ch1_images/Rect pulse.png') # display the figure
 
 
 def gaussian_pulse_demo():
@@ -74,7 +74,7 @@ def gaussian_pulse_demo():
     plt.title('Gaussian pulse') # plot title
     plt.xlabel('Time (s)') # x-axis label
     plt.ylabel('Amplitude') # y-axis label
-    plt.savefig('Gaussian pulse.png') # display the figure
+    plt.savefig('Ch1_images/Gaussian pulse.png') # display the figure
 
 
 def chirp_demo():
@@ -100,7 +100,7 @@ def chirp_demo():
     plt.title('Chirp') # plot title
     plt.xlabel('Time (s)') # x-axis label
     plt.ylabel('Amplitude') # y-axis label
-    plt.savefig('Chirp signal.png') # display the figure
+    plt.savefig('Ch1_images/Chirp signal.png') # display the figure
 
 
 # For this fft example, you have option to use fftshift. Comment/uncomment accordingly.
@@ -121,7 +121,7 @@ def fft_example_1():
     plt.title('Time domain') # plot title
     plt.xlabel('Time (s)') # x-axis label
     plt.ylabel('Amplitude') # y-axis label
-    plt.savefig('fft_example_1_im1.png') # display the figure
+    plt.savefig('Ch1_images/fft_example_1_im1.png') # display the figure
 
     # # fft without fftshift
     # N=fs # FFT size
@@ -145,7 +145,7 @@ def fft_example_1():
     plt.title('Freuency domain') # plot title
     plt.xlabel('f (Hz)') # x-axis label
     plt.ylabel('Amplitude') # y-axis label
-    plt.savefig('fft_example_1_im2.png') # display the figure
+    plt.savefig('Ch1_images/fft_example_1_im2.png') # display the figure
 
 
 # Take FFT, extract amplitude and phase info, re-construct in time domain
@@ -169,7 +169,7 @@ def fft_example_2():
     plt.title('Time domain') # plot title
     plt.xlabel('t (s)') # x-axis label
     plt.ylabel('Amplitude') # y-axis label
-    plt.savefig('fft_example_2_im1.png') # display the figure
+    plt.savefig('Ch1_images/fft_example_2_im1.png') # display the figure
 
     # Calculate fft and extract amplitude info
     N=fs # FFT size
@@ -184,7 +184,7 @@ def fft_example_2():
     plt.title('Amplitude vs Frequency') # plot title
     plt.xlabel('f (Hz)') # x-axis label
     plt.ylabel('Amplitude') # y-axis label
-    plt.savefig('fft_example_2_im2.png') # display the figure
+    plt.savefig('Ch1_images/fft_example_2_im2.png') # display the figure
 
     # Extract phase info.
     # Note: Because arctan is sensitive to small ammounts of noise, zero noise below threshold
@@ -199,7 +199,7 @@ def fft_example_2():
     plt.title('Phase vs Frequency') # plot title
     plt.xlabel('f (Hz)') # x-axis label
     plt.ylabel('Phase') # y-axis label
-    plt.savefig('fft_example_2_im3.png') # display the figure
+    plt.savefig('Ch1_images/fft_example_2_im3.png') # display the figure
 
     x_recon = N*ifft(ifftshift(X),N) # reconstructed signal
     t = np.arange(start = 0,stop = len(x_recon))/fs # recompute time index
@@ -209,7 +209,7 @@ def fft_example_2():
     plt.title('Time domain, reconstructed') # plot title
     plt.xlabel('t (s)') # x-axis label
     plt.ylabel('Amplitude') # y-axis label
-    plt.savefig('fft_example_2_im4.png') # display the figure
+    plt.savefig('Ch1_images/fft_example_2_im4.png') # display the figure
 
 
 # Estimate PSD with Welch method
@@ -234,10 +234,10 @@ def welch_demo():
     plt.title('Time domain') # plot title
     plt.xlabel('t (s)') # x-axis label
     plt.ylabel('Amplitude') # y-axis label
-    plt.savefig('welch_example_im1.png') # display the figure
+    plt.savefig('Ch1_images/welch_example_im1.png') # display the figure
 
     plotWelchPSD(x, fs, fc)
-
+welch_demo()
 
 # Compute total power using norm function and verify total power in frequency domain
 def power_using_norm():
@@ -296,7 +296,7 @@ def analytic_signal_demo():
     plt.title('x[n] - real-valued signal')
     plt.xlabel('n')
     plt.ylabel('x[n]')
-    plt.savefig('analytic_signal_demo_im1.png')
+    plt.savefig('Ch1_images/analytic_signal_demo_im1.png')
 
     z = analytic_signal(x)
 
@@ -307,7 +307,7 @@ def analytic_signal_demo():
     plt.xlabel('n')
     plt.ylabel('$z_r[n]$ and $z_i[n]$')
     plt.legend()
-    plt.savefig('analytic_signal_demo_im2.png')
+    plt.savefig('Ch1_images/analytic_signal_demo_im2.png')
 
 
 # Demonstrate extraction of instantaneous amplitude and phase from analytic signal constructed from real-valued modulated signal
@@ -337,14 +337,14 @@ def extract_envelope_phase():
     plt.title('Modulated signal and extracted envelope')
     plt.xlabel('n')
     plt.ylabel('x(t) and |z(t)|')
-    plt.savefig('extract_envelope_phase_im1.png')
+    plt.savefig('Ch1_images/extract_envelope_phase_im1.png')
 
     plt.figure(1)
     plt.plot(t,extracted_carrier)
     plt.title('Extracted carrier or TFS')
     plt.xlabel('n')
     plt.ylabel('$cos[\omega(t)]$')
-    plt.savefig('extract_envelope_phase_im2.png')
+    plt.savefig('Ch1_images/extract_envelope_phase_im2.png')
 
 
 # Demonstrate phase demodulation using Hilbert transformation
@@ -375,14 +375,14 @@ def hilbert_phase_demod():
     plt.title('Modulating signal')
     plt.xlabel('t')
     plt.ylabel('m(t)')
-    plt.savefig('hilbert_phase_demod_im1.png')
+    plt.savefig('Ch1_images/hilbert_phase_demod_im1.png')
 
     plt.figure(1)
     plt.plot(t, x)
     plt.title('Modulated signal')
     plt.xlabel('t')
     plt.ylabel('x(t)')
-    plt.savefig('hilbert_phase_demod_im2.png')
+    plt.savefig('Ch1_images/hilbert_phase_demod_im2.png')
 
     # Add AWGN noise to the transmitted signal
     mu = 0; sigma = .1 # noise mean and variance
@@ -408,8 +408,8 @@ def hilbert_phase_demod():
     plt.title('demodulated')
     plt.xlabel('t')
     plt.ylabel('demodulated')
-    plt.savefig('hilbert_phase_demod_im3.png')
-    
+    plt.savefig('Ch1_images/hilbert_phase_demod_im3.png')
+
 
 
 
