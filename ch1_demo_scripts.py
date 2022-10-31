@@ -411,7 +411,6 @@ def hilbert_phase_demod():
     plt.savefig('hilbert_phase_demod_im3.png')
     
 
-hilbert_phase_demod()
 
 
 
