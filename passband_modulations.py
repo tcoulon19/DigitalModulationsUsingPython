@@ -19,3 +19,18 @@ def bpsk_mod(ak, L):
     t=np.arange(0, len(ak)*L) # discrete time base
 
     return (s_bb, t)
+
+
+    # Baseband BPSK detection
+    def bpsk_demod(r_bb, L):
+
+        import numpy as np
+
+        x = np.real(r_bb) # I arm
+        x = np.convolve(x, np.ones(L)) # integrate for Tb duration (L samples)
+        x = x[L-1:-1:L] # I arm - sample at every L
+        ak_hat = (x > 0).transpose() # threshold detector
+        
+        return ak_hat 
+
+
