@@ -141,7 +141,7 @@ def DEBPSK_performance():
 
 
 # DBPSK non-coherent detection
-def dbpsk_noncoherent():
+def DBPSK_noncoherent():
 
     import numpy as np
     import matplotlib.pyplot as plt
@@ -218,7 +218,7 @@ def dbpsk_noncoherent():
     plt.legend()
     plt.savefig('Ch2_images/DBPSK_noncoherent.png')
 
-DEBPSK_performance()
+DBPSK_noncoherent()
 
 
 
