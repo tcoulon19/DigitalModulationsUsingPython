@@ -179,7 +179,44 @@ def dbpsk_noncoherent():
         z = np.convolve(w, np.ones(L)) # Integrator from kTb to (k+1)Tb (L samples)
         u = z[L-1:-1-L:L] # Sampler t = kTb
         ak_hat = (u<0) # Decicion
-        BER_suboptimum[i] = np.sum(ak != ak_hat)/N # BER for suboptimum receiver        
+        BER_suboptimum[i] = np.sum(ak != ak_hat)/N # BER for suboptimum receiver
+
+        #--------Optimum receiver--------
+        p = np.real(r)*np.cos(2*np.pi*Fc*t/Fs) # Multiply I arm by cos
+        q = np.imag(r)*np.sin(2*np.pi*Fc*t/Fs) # Multiply Q arm by sin
+        x = np.convolve(p, np.ones(L)) # Integrate I-arm by Tb duration (L samples)
+        y = np.convolve(q, np.ones(L)) # Integrate Q-arm by Tb duration (L samples)
+        xk = x[L-1:-1:L] # Sample every Lth sample
+        yk = y[L-1:-1:L] # Sample every Lth sample
+        w0 = xk[0:-2] # Non-delayed version on I-arm
+        w1 = xk[1:-1] # 1-bit delay on I-arm
+        z0 = yk[0:-2] # Non-delayed version on Q-arm
+        z1 = yk[1:-1] # Non-delayed version on Q-arm
+        u = w0*w1 + z0*z1 # Decision statistic
+        ak_hat = (u<0) # Threshold detection
+        BER_optimum[i] = np.sum(ak[1:-1] != ak_hat)/N # BER for optimum receiver
+
+    #--------Theoretical Bit/Symbol Error Rates--------
+    EbN0lins = 10**(EbN0dB/10) # Convert dB to linear
+    theory_DBPSK_optimum = .5*np.exp(-EbN0lins)
+    theory_DBPSK_suboptimum = .5*np.exp(-.76*EbN0lins)
+    theory_DBPSK_coherent = erfc(np.sqrt(EbN0lins))*(1-.5*erfc(np.sqrt(EbN0lins)))
+    theory_BPSK_conventional = .5*erfc(np.sqrt(EbN0lins))
+
+    #------Plots------
+    plt.figure(0)
+    plt.semilogy(EbN0dB, BER_suboptimum, 'k*', label = 'DBPSK subopt (sim)')
+    plt.semilogy(EbN0dB, BER_optimum, 'b*', label = 'DBPSK opt (sim)')
+    plt.semilogy(EbN0dB, theory_DBPSK_suboptimum, 'm-', label = 'DBPSK subopt (theory)')
+    plt.semilogy(EbN0dB, theory_DBPSK_optimum, 'r-', label = 'DBPSK opt (theory)')
+    plt.semilogy(EbN0dB, theory_DBPSK_coherent, 'k-', label = 'Coherent DEBPSK')
+    plt.semilogy(EbN0dB, theory_BPSK_conventional, 'b-', label = 'Coherent BPSK')
+    plt.xlabel('$E_b/N_0 (dB)$')
+    plt.ylabel('$Probability of Bit Error - P_b$')
+    plt.title('Probability of D-BPSK over AWGN')
+    plt.savefig('Ch2_images/dbpsk_noncoherent.png')
+
+
 
 
 
