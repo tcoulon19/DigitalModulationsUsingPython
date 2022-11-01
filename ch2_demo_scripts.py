@@ -136,6 +136,7 @@ def DEBPSK_performance():
     plt.xlabel('$E_b/N_0$ (dB)')
     plt.ylabel('Probability of Bit Error - $P_b$')
     plt.title('Probability of Bit Error for DEBPSK and BPSK over AWGN')
+    plt.legend()
     plt.savefig('Ch2_images/DEBPSK_performance.png')
 
 
@@ -214,8 +215,10 @@ def dbpsk_noncoherent():
     plt.xlabel('$E_b/N_0 (dB)$')
     plt.ylabel('$Probability of Bit Error - P_b$')
     plt.title('Probability of D-BPSK over AWGN')
-    plt.savefig('Ch2_images/dbpsk_noncoherent.png')
+    plt.legend()
+    plt.savefig('Ch2_images/DBPSK_noncoherent.png')
 
+DEBPSK_performance()
 
 
 
