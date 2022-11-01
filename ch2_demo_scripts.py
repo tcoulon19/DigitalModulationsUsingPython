@@ -243,14 +243,14 @@ def qpsk():
 
         # Compute and add AWGN noise
         r = awgn(s,EbN0,OF) # Refer Chapter section 4.1
-        a_hat = qpsk_demod(r,fc,OF) # QPSK demodulation
+        a_hat = qpsk_demod(r,fc,OF,enable_plot=True) # QPSK demodulation
         BER[i] = np.sum(a != a_hat)/N # Bit error rate computation
 
     #--------Theoretical bit error rate--------
     theoreticalBER = .5*erfc(np.sqrt(10**(EbN0dB/10)))
 
     #--------Plot performance curve--------
-    plt.figure(0)
+    plt.figure(6)
     plt.semilogy(EbN0dB, BER, 'k*', label='Simulated')
     plt.semilogy(EbN0dB, theoreticalBER, 'r-', label='Theoretical')
     plt.xlabel('$E_b/N_0$ (dB)')
@@ -259,7 +259,7 @@ def qpsk():
     plt.legend()
     plt.savefig('Ch2_images/qpsk')
 
-
+qpsk()
 
 
 
