@@ -138,5 +138,51 @@ def DEBPSK_performance():
     plt.title('Probability of Bit Error for DEBPSK and BPSK over AWGN')
     plt.savefig('Ch2_images/DEBPSK_performance.png')
 
-DEBPSK_performance()
+
+# DBPSK non-coherent detection
+def dbpsk_noncoherent():
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from passband_modulations import bpsk_mod
+    from channels import awgn
+    from scipy.signal import lfilter
+    from scipy.special import erfc
+
+    N = 100000 # Number of symbols to transmit
+    EbN0dB = np.arange(-4,11,2) # Eb/N0 range in dB for simulation
+    L = 8 # Oversampling factor L = Tb/Ts
+    # If carrier is used, use L = Fs/Fc where Fs >> 2*Fc
+    Fc = 800 # Carrier frequency
+    Fs = L*Fc # Sampling frequency
+
+    BER_suboptimum = np.zeros(len(EbN0dB)) # BER measures
+    BER_optimum = np.zeros(len(EbN0dB))
+
+    #--------Transmitter--------
+    ak = np.random.randint(2, size=N) # Uniform random symbols from 0s and 1s
+    bk = lfilter([1.0],[1.0,-1.0],ak) # IIR filter for differential encoding
+    bk = bk % 2 # XOR operation is equivalent to modulo-2
+    [s_bb,t] = bpsk_mod(bk,L) # BPSK modulation (waveform) - baseband
+    s = s_bb*np.cos(2*np.pi*Fc*t/Fs).astype(complex) # DBPSK with carrier
+
+    for i,EbN0 in enumerate(EbN0dB):
+
+        # Compute and add AWGN noise
+        r = awgn(s,EbN0,L) # Refer to Chapter section 4.1
+
+        #--------Suboptimum receiver--------
+        p = np.real(r)*np.cos(2*np.pi*Fc*t/Fs) # Demodulate to baseband using BPF
+        w0 = np.hstack((p,np.zeros(L))) # Append L samples on one arm for equal lengths
+        w1 = np.hstack((np.zeros(L),p)) # Delay the other arm by Tb (L samples)
+        w = w0*w1 # Multiplier
+        z = np.convolve(w, np.ones(L)) # Integrator from kTb to (k+1)Tb (L samples)
+        u = z[L-1:-1-L:L] # Sampler t = kTb
+        ak_hat = (u<0) # Decicion
+        BER_suboptimum[i] = np.sum(ak != ak_hat)/N # BER for suboptimum receiver        
+
+
+
+
+
 
