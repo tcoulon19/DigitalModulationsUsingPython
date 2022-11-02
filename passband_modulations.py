@@ -1,5 +1,6 @@
 # BPSK baseband only, can be multiplied by carrier freq outside function for passband
 from re import S
+from matplotlib.artist import ArtistInspector
 import numpy as np
 
 
@@ -246,6 +247,51 @@ def oqpsk_mod(a, fc, OF, enable_plot=False):
     result['t'] = t
 
     return result
+
+
+# OQPSK demodulator
+def oqpsk_demod(r, N, fc, OF, enable_plot=False):
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    '''
+    Demodulate a OQPSK signal
+    Parameters:
+        r: received signal at the receiver front end
+        N: Number of OQPSK symbols transmitted
+        fc: carrier frequency (Hz)
+        OF: oversampling factor (at least 4 is better)
+        enable_plot: True = plot receiver waveforms (default False)
+    Returns:
+        a_hat: detected binary stream
+    '''
+    fs = OF*fc # Sampling frequency
+    L = 2*OF # Number of samples in 2Tb duration
+    t = np.arange(0,(N+1)*OF/fs,1/fs) # Time base
+    x = r*np.cos(2*np.pi*fc*t) # I arm
+    y = -r*np.sin(2*np.pi*fc*t) # Q arm
+    x = np.convolve(x,np.ones(L)) # Integrate for L (Tsym=2*Tb) duration
+    y = np.convolve(y,np.ones(L)) # Integrate for L (Tsym=2*Tb) duration
+
+    x = x[L-1:-1:L] # I arm - sample at every symbol instant Tsym
+    y = y[L+L//2-1:-1-L//2:L] # Q arm - sample at every symbol starting at L+L/2-1th sample
+
+    a_hat = np.zeros(N)
+    a_hat[0::2] = (x>0) # Even bits
+    a_hat[1::2] = (y>0) # Odd bits
+
+    if enable_plot:
+
+        plt.figure(5)
+        plt.clf()
+        plt.plot(x[0:200],y[0:200],'o')
+        plt.title('Demodulated signal constelation plot')
+        plt.savefig('Ch2_images/oqpsk_demod')
+    
+    return a_hat
+
+    
 
 
 
