@@ -274,7 +274,7 @@ def oqpsk_demod(r, N, fc, OF, enable_plot=False):
     x = np.convolve(x,np.ones(L)) # Integrate for L (Tsym=2*Tb) duration
     y = np.convolve(y,np.ones(L)) # Integrate for L (Tsym=2*Tb) duration
     
-    x = x[L-1:-L+int(L/2):L] # I arm - sample at every symbol instant Tsym
+    x = x[L-1:-L+L//2:L] # I arm - sample at every symbol instant Tsym
     y = y[L+L//2-1:-1-L//2:L] # Q arm - sample at every symbol starting at L+L/2-1th sample
 
     a_hat = np.zeros(N)
