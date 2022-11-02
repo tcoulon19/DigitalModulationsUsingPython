@@ -251,6 +251,7 @@ def qpsk():
 
     #--------Plot performance curve--------
     plt.figure(6)
+    plt.clf()
     plt.semilogy(EbN0dB, BER, 'k*', label='Simulated')
     plt.semilogy(EbN0dB, theoreticalBER, 'r-', label='Theoretical')
     plt.xlabel('$E_b/N_0$ (dB)')

@@ -82,30 +82,35 @@ def qpsk_mod(a, fc, OF, enable_plot = False):
     if enable_plot:
 
         plt.figure(0)
+        plt.clf()
         plt.plot(t,I)
         plt.xlim(0,20*L/fs)
         plt.title('I(t)')
         plt.savefig('Ch2_images/qpsk_mod_im1')
 
         plt.figure(1)
+        plt.clf()
         plt.plot(t,Q)
         plt.xlim(0,20*L/fs)
         plt.title('Q(t)')
         plt.savefig('Ch2_images/qpsk_mod_im2')
 
         plt.figure(2)
+        plt.clf()
         plt.plot(t,I_t,'r')
         plt.xlim(0,20*L/fs)
         plt.title('$I(t) cos(2 \pi f_c t)$')
         plt.savefig('Ch2_images/qpsk_mod_im3')
 
         plt.figure(3)
+        plt.clf()
         plt.plot(t,Q_t,'r')
         plt.xlim(0,20*L/fs)
         plt.title('$Q(t) sin(2 \pi f_c t)$')
         plt.savefig('Ch2_images/qpsk_mod_im4')
 
         plt.figure(4)
+        plt.clf()
         plt.plot(t,s_t)
         plt.xlim(0,20*L/fs)
         plt.title('$s(t) = I(t) cos(2 \pi f_c t) - Q(t) sin(2 \pi f_c t)$')
@@ -152,8 +157,10 @@ def qpsk_demod(r, fc, OF, enable_plot=False):
 
     if enable_plot:
 
-        plt.figure(0)
+        plt.figure(5)
+        plt.clf()
         plt.plot(x[0:200],y[0:200],'o')
+        plt.title('Demodulated signal constelation plot')
         plt.savefig('Ch2_images/qpsk_demod')
 
     return a_hat
