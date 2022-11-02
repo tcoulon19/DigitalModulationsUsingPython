@@ -260,7 +260,48 @@ def qpsk():
     plt.legend()
     plt.savefig('Ch2_images/qpsk')
 
-qpsk()
+
+# Waveform simulation performance of OQPSK
+def oqpsk():
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from passband_modulations import oqpsk_mod, oqpsk_demod
+    from channels import awgn
+    from scipy.special import erfc
+
+    N = 100000 # Number of symbols to transmit
+    EbN0dB = np.arange(-4,11,2) # Eb/N0 range in dB for simulation
+    fc = 100 # Carrier frequency in Hz
+    OF = 8 # Oversampling factor, sampling frequency will be fs=OF*fc
+
+    BER = 8 # Oversampling factor, sampling frequency will be fs=OF*fc
+
+    a = np.random.randint(2, size=N) # Uniform random symbols from 0s and 1s
+    result = oqpsk_mod(a, fc, OF, enable_plot=True) # OQPSK modulation
+    s = result['s(t)'] # Get values from returned dictionary
+
+    for i,EbN0 in enumerate(EbN0dB):
+
+        # Compute and add AWGN noise
+        r = awgn(s, EbN0, OF) # Refer Chapter section 4.1
+
+        a_hat = oqpsk_demod(r,N,fc,OF,enable_plot=True) # OQPSK demodulation
+        BER[i] = np.sum(a != a_hat)/N # Bit Error Rate Computation
+
+    #--------Theoretical bit error rate--------
+    theoreticalBER = .5*erfc(np.sqrt(10**(EbN0dB/10)))
+
+    #--------Plot performance curve--------
+    plt.figure(6)
+    plt.clf()
+    plt.semilogy(EbN0dB, BER, 'k*', label='Simulated')
+    plt.semilogy(EbN0dB, theoreticalBER, 'r-', label='Theoretical')
+    plt.xlabel('$E_b/N_0$ (dB)')
+    plt.ylabel('Probability of Bit Error - $P_b$')
+    plt.title('Probability of Bit Error for OQPSK modulation')
+    plt.legend()
+    plt.savefig('Ch2_images/oqpsk')
 
 
 
