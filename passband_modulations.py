@@ -292,6 +292,51 @@ def oqpsk_demod(r, N, fc, OF, enable_plot=False):
     return a_hat
 
 
+# Differential encoding for pi/4-DQPSK
+def piBy4_dqpsk_diff_encoding(a, enable_plot=False):
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    '''
+    Phase mapper for pi/4-DQPSK modulation
+    Parameters:
+        a: input stream of binary bits
+    Returns:
+        (u,v): tuple, where:
+            u: differentially encoded I-channel bits
+            v: differentially encoded Q-channel bits
+    '''
+    if len(a)%2: raise ValueError('Length of binary stream must be even')
+    I = a[0::2] # Even bit stream
+    Q = a[1::2] # Odd bit stream
+    # Club 2-bits to form a symbol and use it as index for dTheta table
+    m = 2*I+Q
+    dTheta = np.array([-3*np.pi/4, 3*np.pi/4, -np.pi/4, np.pi/4]) # Lookup table for pi/4-DQPSK
+    u = np.zeros(len(m)+1)
+    v = np.zeros(len(m)+1)
+    u[0]=1; v[0]=0 # Initial conditions for uk and vk
+
+    for k in range(0,len(m)):
+
+        u[k+1] = u[k] * np.cos(dTheta[m[k]]) - v[k] * np.sin(dTheta[m[k]])
+        v[k+1] = u[k] * np.sin(dTheta[m[k]]) + v[k] * np.cos(dTheta[m[k]])
+    
+    if enable_plot: # Constellation plot
+
+        plt.figure(0)
+        plt.clf()
+        plt.plot(u,v,'o')
+        plt.title('Constellation')
+        plt.savefig('Ch2_images/piBy4_dqpsk_diff_encoding.png')
+
+    return (u,v)
+
+
+
+    
+
+
 
 
 
