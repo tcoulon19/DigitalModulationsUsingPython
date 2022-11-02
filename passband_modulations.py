@@ -333,6 +333,31 @@ def piBy4_dqpsk_diff_encoding(a, enable_plot=False):
     return (u,v)
 
 
+# Pi/4-DQPSK modulator
+def piBy4_dqpsk_mod(a,fc,OF,enable_plot=False)
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    '''
+    Modulate a binary stream using pi/4-DQPSK
+    Parameters:
+        a: input binary data stream (0s and 1s) to modulate
+        fc: carrier frequency in Hz
+        OF: oversampling factor
+    Returns:
+        result: Dictionary containing the following keyword entries:
+            s(t): pi/4-DQPSK modulated signal vector with carrier
+            U(t): differentially coded I channel waveform (no carrier)
+            V(t): differentially coded Q-channel waveform (no carrier)
+            t: time base
+    '''
+    (u,v) = piBy4_dqpsk_diff_encoding(a) # Differential encoding for pi/4-DQPSK
+    # Waveform formation (similar to conventional QPSK)
+    L = 2*OF # Number of samples in each symbol (QPSK has 2 bits/symbol)
+    U = np.tile(u, (L,1)).flatten('F') # Odd bit stream at 1/2Tb baud
+    V = np.tile(v, (L,1)).flatten('F') # Even bit steam at 1/2Tb baud
+
 
     
 
