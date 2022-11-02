@@ -1,4 +1,5 @@
 # BPSK baseband only, can be multiplied by carrier freq outside function for passband
+from re import S
 import numpy as np
 
 
@@ -46,7 +47,7 @@ def bpsk_demod(r_bb, L):
     return ak_hat 
 
 
-# QPSK modulator
+# QPSK modulator. Note: Plots of I(t) and Q(t) plot I and Q, not I_t, and Q_t
 def qpsk_mod(a, fc, OF, enable_plot = False):
 
     import numpy as np
@@ -164,6 +165,90 @@ def qpsk_demod(r, fc, OF, enable_plot=False):
         plt.savefig('Ch2_images/qpsk_demod')
 
     return a_hat
+
+
+# OQPSK modulator. Note: Plots of I(t) and Q(t) plot I and Q, not I_t, and Q_t
+def oqpsk_mod(a, fc, OF, enable_plot=False):
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    '''
+    Modulate an incoming binary stream using OQPSK
+    Parameters:
+        a: input binary stream (0s and 1s) to modulate
+        fc: carrier freq in Hz
+        OF: oversampling factor -- at least 4 is better
+        enable_plot: True = plot transmitter waveforms (default False)
+    Returns:
+        result: dictionary containing the following keyword entries:
+            s(t): QPSK modulated signal vector with carrier
+            I(t): baseband I channel waveform (no carrier)
+            Q(t): baseband Q channel waveform (no carrier)
+            t: time base for the carrier modulated signal
+    '''
+    L = 2*OF # Samples in each symbol (QPSK has 2 bits per symbol)
+    I = a[0::2]; Q=a[1::2] # Even and odd bit streams
+    # Even/odd streams at 1/2Tb baud
+    from scipy.signal import upfirdn # NRZ encoder
+    I = upfirdn(h=[1]*L, x=2*I-1, up=L)
+    Q = upfirdn(h=[1]*L, x=2*Q-1, up=L)
+
+    I = np.hstack((I,np.zeros(L//2))) # 0-padding at end
+    Q = np.hstack((np.zeros(L//2),Q)) # 0-padding at start
+
+    fs = OF*fc # Sampling frequency
+    t = np.arange(0,len(I)/fs,1/fs) # Time base
+    I_t = I*np.cos(2*np.pi*fc*t); Q_t = -Q*np.sin(2*np.pi*fc*t)
+    s_t = I_t + Q_t # QPSK modulated baseband signal
+
+    if enable_plot:
+
+        plt.figure(0)
+        plt.clf()
+        plt.plot(t,I)
+        plt.xlim(0,20*L/fs)
+        plt.title('I(t)')
+        plt.savefig('Ch2_images/oqpsk_mod_im1')
+
+        plt.figure(1)
+        plt.clf()
+        plt.plot(t,Q)
+        plt.xlim(0,20*L/fs)
+        plt.title('Q(t)')
+        plt.savefig('Ch2_images/oqpsk_mod_im2')
+
+        plt.figure(2)
+        plt.clf()
+        plt.plot(t,I_t,'r')
+        plt.xlim(0,20*L/fs)
+        plt.title('$I(t) cos(2 \pi f_c t)$')
+        plt.savefig('Ch2_images/oqpsk_mod_im3')
+
+        plt.figure(3)
+        plt.clf()
+        plt.plot(t,Q_t,'r')
+        plt.xlim(0,20*L/fs)
+        plt.title('$Q(t) sin(2 \pi f_c t)$')
+        plt.savefig('Ch2_images/oqpsk_mod_im4')
+
+        plt.figure(4)
+        plt.clf()
+        plt.plot(t,s_t)
+        plt.xlim(0,20*L/fs)
+        plt.title('$s(t) = I(t) cos(2 \pi f_c t) - Q(t) sin(2 \pi f_c t)$')
+        plt.savefig('Ch2_images/oqpsk_mod_im5')
+
+    result = dict()
+    result['s(t)'] = s_t
+    result['I(t)'] = I
+    result['Q(t)'] = Q
+    result['t'] = t
+
+    return result
+
+
+
 
 
 
