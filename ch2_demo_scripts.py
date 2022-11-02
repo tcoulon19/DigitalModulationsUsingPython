@@ -275,7 +275,7 @@ def oqpsk():
     fc = 100 # Carrier frequency in Hz
     OF = 8 # Oversampling factor, sampling frequency will be fs=OF*fc
 
-    BER = 8 # Oversampling factor, sampling frequency will be fs=OF*fc
+    BER = np.zeros(len(EbN0dB)) # For BER values for each Eb/N0
 
     a = np.random.randint(2, size=N) # Uniform random symbols from 0s and 1s
     result = oqpsk_mod(a, fc, OF, enable_plot=True) # OQPSK modulation
@@ -303,7 +303,7 @@ def oqpsk():
     plt.legend()
     plt.savefig('Ch2_images/oqpsk')
 
-
+oqpsk()
 
 
 
