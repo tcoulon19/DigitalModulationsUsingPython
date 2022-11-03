@@ -358,6 +358,16 @@ def piBy4_dqpsk_mod(a,fc,OF,enable_plot=False)
     U = np.tile(u, (L,1)).flatten('F') # Odd bit stream at 1/2Tb baud
     V = np.tile(v, (L,1)).flatten('F') # Even bit steam at 1/2Tb baud
 
+    fs = OF*fc # Sampling frequency
+    t=np.arange(0, len(U)/fs,1/fs) # Time base
+    U_t = U*np.cos(2*np.pi*fc*t)
+    V_t = -V*np.sin(2*np.pi*fc*t)
+    s_t = U_t + V_t
+
+    if enable_plot:
+
+        
+
 
     
 
