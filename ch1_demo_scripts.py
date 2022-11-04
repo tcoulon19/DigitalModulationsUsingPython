@@ -135,7 +135,7 @@ def fft_example_1():
 
     # fft with fftshift
     N=fs # FFT size
-    X = fftshift(fft(x,N)) # N-point complex DFT, output contains DC at index 0
+    X = fftshift(fft(x,N)) / N # N-point complex DFT, output contains DC at index 0
     df=fs/N # frequency resolution
     sampleIndex = np.arange(start = -N//2,stop = N//2) # raw index for FFT plot
     f=sampleIndex*df # x-axis index converted to frequencies
@@ -146,6 +146,8 @@ def fft_example_1():
     plt.xlabel('f (Hz)') # x-axis label
     plt.ylabel('Amplitude') # y-axis label
     plt.savefig('Ch1_images/fft_example_1_im2.png') # display the figure
+
+fft_example_1()
 
 
 # Take FFT, extract amplitude and phase info, re-construct in time domain

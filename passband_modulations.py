@@ -365,24 +365,3 @@ def piBy4_dqpsk_mod(a,fc,OF,enable_plot=False)
     s_t = U_t + V_t
 
     if enable_plot:
-
-        
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
