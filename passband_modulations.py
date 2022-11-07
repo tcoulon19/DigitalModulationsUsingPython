@@ -503,7 +503,7 @@ def msk_mod(a,fc,OF,enable_plot=False):
     ai = upfirdn(h=[1], x=ai, up=L)
     aq = upfirdn(h=[1], x=aq, up=L)
 
-    aq = np.pad(aq, (L//2.0), 'constant') # Delay aq by Tb (delay by L/2)
+    aq = np.pad(aq, (L//2,0), 'constant') # Delay aq by Tb (delay by L/2)
     ai = np.pad(ai, (0,L//2), 'constant') # Padding at end to equal length of Q
 
     # Construct low-pass filter and filter the I/Q samples through it
@@ -524,7 +524,7 @@ def msk_mod(a,fc,OF,enable_plot=False):
 
         plt.figure(0)
         plt.clf()
-        plt.plot(t, sI_t)
+        plt.plot(t, sI_t, '--')
         plt.plot(t,sIc_t,'r')
         plt.xlim(-Tb,20*Tb)
         plt.title('$s_I(t)$')
@@ -532,7 +532,7 @@ def msk_mod(a,fc,OF,enable_plot=False):
 
         plt.figure(1)
         plt.clf()
-        plt.plot(t, sQ_t)
+        plt.plot(t, sQ_t, '--')
         plt.plot(t,sQc_t,'r')
         plt.xlim(-Tb,20*Tb)
         plt.title('$s_Q(t)$')
@@ -544,6 +544,11 @@ def msk_mod(a,fc,OF,enable_plot=False):
         plt.xlim(-Tb,20*Tb)
         plt.title('s(t)')
         plt.savefig('Ch2_images/msk_mod_im3')
+
+    result = dict()
+    result['s(t)']=s_t;result['sI(t)']=sI_t;result['sQ(t)']=sQ_t;result['t']=t
+    
+    return result
 
 
 # MSK demodulator
@@ -574,8 +579,8 @@ def msk_demod(r,N,fc,OF):
     iHat = np.convolve(u,np.ones(L)) # Integrate for L (Tsym=2*Tb) duration
     qHat = np.convolve(v,np.ones(L)) # Integrate for L (Tsym=2*Tb) duration
 
-    iHat = iHat[L-1:-1-L:L] # I-sample at the end of every symbol
-    qHat = qHat[L+L//2-1:-1-L//2:L] # Q-sample from L+L/2th sample
+    iHat = iHat[L-1::L] # I-sample at the end of every symbol
+    qHat = qHat[L+L//2-1::L] # Q-sample from L+L/2th sample
 
     a_hat = np.zeros(N)
     a_hat[0::2] = iHat > 0 # Thresholding - odd bits
@@ -583,5 +588,5 @@ def msk_demod(r,N,fc,OF):
 
     return a_hat
 
-    
+
 
