@@ -408,3 +408,66 @@ def piBy4_dqpsk_mod(a,fc,OF,enable_plot=False):
     result['t'] = t
 
     return result
+
+
+# DQPSK differential decoding detection
+def piBy4_dqpsk_diff_decoding(w,z):
+
+    '''
+    Phase mapper for pi/4-DQPSK modulation
+    Parameters:
+        w - differentially coded I-channel bits at the receiver
+        z - differentially coded Q-channel bits at the receiver
+    Returns:
+        a_hat - binary bit stream after differential decoding
+    '''
+
+    if len(w) != len(z): raise ValueError('Length mismatch between w and z')
+
+    x = np.zeros(len(w)-1)
+    y = np.zeros(len(w)-1)
+
+    for k in range(0,len(w)-1):
+        x[k] = w[k+1]*w[k] + z[k+1]*z[k]
+        y[k] = z[k+1]*w[k] - w[k+1]*z[k]
+
+    a_hat = np.zeros(2*len(x))
+    a_hat[0::2] = (x>0) # Odd bits
+    a_hat[1::2] = (y>0) # Even bits
+
+    return a_hat
+
+
+# pi/4 -- DQPSK demodulator
+def piBy4_dqpsk_demod(r,fc,OF,enable_plot=True):
+    
+    import matplotlib.pyplot as plt
+
+    '''
+    Differential coherent demodulation of pi/4-DQPSK
+    Parameters:
+        r: received signal at the receiver front end
+        fc: carrier frequency in Hz
+        OF: oversampling factor (multiples of fc) - at least 4 is better
+    Returns:
+        a_cap: detected binary stream
+    '''
+
+    fs = OF*fc # Sampling frequency
+    L = 2*OF # Samples in 2Tb duration
+    t = np.arange(0,len(r)/fs,1/fs)
+    w = r*np.cos(2*np.pi*fc*t) # I arm
+    z = -r*np.sin(2*np.pi*fc*t) # Q arm
+    w = np.convolve(w,np.ones(L)) # Integrate for L (Tsym = 2*Tb) duration
+    z = np.convolve(z,np.ones(L)) # Integrate for L (Tsym = 2*Tb) duration
+    w = w[L-1::L] # I arm - sample at every symbol instant Tsym
+    z = z[L-1::L] # Q arm - sample at every symbol instant Tsym
+    a_cap = piBy4_dqpsk_diff_decoding(w,z)
+
+    if enable_plot: # Constellation plot
+
+        plt.figure(6)
+        plt.clf()
+        plt.plot(w,z,'o')
+        plt.title('Constellation')
+        plt.savefig('Ch2_images/piBy4_dqpsk_demod')
