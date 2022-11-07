@@ -560,5 +560,28 @@ def msk_demod(r,N,fc,OF):
         a_hat: detected binary stream
     '''
 
+    L = 2*OF # Samples in 2Tb duration
+    Fs=OF*fc; Ts=1/Fs; Tb=OF*Ts # Sampling frequency, durations
+    t = np.arange(-OF, len(r)-OF)/Fs # Time base
+
+    # Cosine and sine functions for hald-sinusoid shaping
+    x = abs(np.cos(np.pi*t/(2*Tb)))
+    y = abs(np.sin(np.pi*t/(2*Tb)))
+
+    u = r*x*np.cos(2*np.pi*fc*t) # Multiply I by half cosines and cos(2*pi*fc*t)
+    v = -r*y*np.sin(2*np.pi*fc*t) # Multiply Q by half sines and sin(2*pi*fc*t)
+
+    iHat = np.convolve(u,np.ones(L)) # Integrate for L (Tsym=2*Tb) duration
+    qHat = np.convolve(v,np.ones(L)) # Integrate for L (Tsym=2*Tb) duration
+
+    iHat = iHat[L-1:-1-L:L] # I-sample at the end of every symbol
+    qHat = qHat[L+L//2-1:-1-L//2:L] # Q-sample from L+L/2th sample
+
+    a_hat = np.zeros(N)
+    a_hat[0::2] = iHat > 0 # Thresholding - odd bits
+    a_hat[1::2] = qHat > 0 # Thresholding - even bits
+
+    return a_hat
+
     
 
