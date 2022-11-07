@@ -334,7 +334,7 @@ def piBy4_dqpsk_diff_encoding(a, enable_plot=False):
 
 
 # Pi/4-DQPSK modulator
-def piBy4_dqpsk_mod(a,fc,OF,enable_plot=False)
+def piBy4_dqpsk_mod(a,fc,OF,enable_plot=False):
 
     import numpy as np
     import matplotlib.pyplot as plt
@@ -365,3 +365,46 @@ def piBy4_dqpsk_mod(a,fc,OF,enable_plot=False)
     s_t = U_t + V_t
 
     if enable_plot:
+
+        plt.figure(1)
+        plt.clf()
+        plt.plot(t,U)
+        plt.xlim(0,10*L/fs)
+        plt.title('U(t)-baseband')
+        plt.savefig('Ch2_images/piBy4_dqpsk_mod_im1')
+
+        plt.figure(2)
+        plt.clf()
+        plt.plot(t,V)
+        plt.xlim(0,10*L/fs)
+        plt.title('V(t)-baseband')
+        plt.savefig('Ch2_images/piBy4_dqpsk_mod_im2')
+
+        plt.figure(3)
+        plt.clf()
+        plt.plot(t,U_t,'r')
+        plt.xlim(0,10*L/fs)
+        plt.title('U(t)-with carrier')
+        plt.savefig('Ch2_images/piBy4_dqpsk_mod_im3')
+
+        plt.figure(4)
+        plt.clf()
+        plt.plot(t,V_t,'r')
+        plt.xlim(0,10*L/fs)
+        plt.title('V(t)-with carrier')
+        plt.savefig('Ch2_images/piBy4_dqpsk_mod_im4')
+
+        plt.figure(5)
+        plt.clf()
+        plt.plot(t,s_t)
+        plt.xlim(0,10*L/fs)
+        plt.title('s(t)')
+        plt.savefig('Ch2_images/piBy4_dqpsk_mod_im5')
+
+    result = dict()
+    result['s(t)'] = s_t 
+    result['U(t)'] = U
+    result['V(t)'] = V
+    result['t'] = t
+
+    return result
