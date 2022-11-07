@@ -84,7 +84,7 @@ def BPSK_performance():
         plt.ylabel('Probability of Bit Error - $P_b$')
         plt.title('Probability of Bit Error for BPSK modulation')
         plt.savefig('Ch2_images/BPSK_performance_im6.png')
-
+BPSK_performance()
 
 # Coherent detection of DEBPSK
 def DEBPSK_performance():
@@ -264,7 +264,7 @@ def qpsk():
     plt.title('Probability of Bit Error for QPSK modulation')
     plt.legend()
     plt.savefig('Ch2_images/qpsk')
-qpsk()
+
 
 # Waveform simulation performance of OQPSK
 def oqpsk():
