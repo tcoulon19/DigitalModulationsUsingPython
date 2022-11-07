@@ -401,7 +401,7 @@ def cpfsk():
     plt.clf()
     plt.plot(t,theta)
     plt.xlabel('t')
-    plt.ylabel('$\theta(t)$')
+    plt.ylabel('$theta(t)$')
     plt.savefig('Ch2_images/cpfsk_im2')
 
     plt.figure(2)
