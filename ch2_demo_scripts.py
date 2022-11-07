@@ -360,7 +360,7 @@ def piby4_dqpsk():
     plt.legend()
     plt.savefig('Ch2_images/piby4_dqpsk.png')
 
-piby4_dqpsk()
+oqpsk()
 
 
 
