@@ -475,3 +475,90 @@ def piBy4_dqpsk_demod(r,fc,OF,enable_plot=False):
     return a_cap
 
 
+# MSK Modulator
+def msk_mod(a,fc,OF,enable_plot=False):
+
+    import matplotlib.pyplot as plt
+
+    '''
+    Modulate an incoming binary stream using MSK
+    Parameters:
+        a: input binary data stream (0s and 1s) to modulate
+        fc: carrier frequency in Hz
+        OF: oversampling factor (at least 4 is better)
+    Returns:
+        result: Dictionary containing the following keyword entries:
+            s(t): MSK modulated signal with carrier
+            sI(t): baseband I channel waveform (no carrier)
+            sQ(t): baseband Q channel waveform (no carrier)
+            t: time base
+    '''
+
+    ak = 2*a-1 # NRZ encoding; 0 -> -1, 1 -> +1
+    ai = ak[0::2]; aq = ak[1::2] # Split even and odd bit streams
+    L = 2*OF # Represents one symbol duration Tsym=2xTb
+
+    # Upsample by L the bits streams in I and Q arms
+    from scipy.signal import upfirdn, lfilter
+    ai = upfirdn(h=[1], x=ai, up=L)
+    aq = upfirdn(h=[1], x=aq, up=L)
+
+    aq = np.pad(aq, (L//2.0), 'constant') # Delay aq by Tb (delay by L/2)
+    ai = np.pad(ai, (0,L//2), 'constant') # Padding at end to equal length of Q
+
+    # Construct low-pass filter and filter the I/Q samples through it
+    Fs = OF*fc
+    Ts = 1/Fs
+    Tb = OF*Ts
+    t = np.arange(0,2*Tb+Ts,Ts)
+    h = np.sin(np.pi*t/(2*Tb)) # LPF filter
+    sI_t = lfilter(b=h, a=[1], x=ai) # Baseband I-channel
+    sQ_t = lfilter(b=h, a=[1], x=aq) # Baseband Q-channel
+
+    t = np.arange(0, Ts*len(sI_t), Ts) # For RF carrier
+    sIc_t = sI_t*np.cos(2*np.pi*fc*t) # With carrier
+    sQc_t = -sQ_t*np.sin(2*np.pi*fc*t) # With carrier
+    s_t = sIc_t + sQc_t # Bandpass MSK modulated signal
+
+    if enable_plot:
+
+        plt.figure(0)
+        plt.clf()
+        plt.plot(t, sI_t)
+        plt.plot(t,sIc_t,'r')
+        plt.xlim(-Tb,20*Tb)
+        plt.title('$s_I(t)$')
+        plt.savefig('Ch2_images/msk_mod_im1')
+
+        plt.figure(1)
+        plt.clf()
+        plt.plot(t, sQ_t)
+        plt.plot(t,sQc_t,'r')
+        plt.xlim(-Tb,20*Tb)
+        plt.title('$s_Q(t)$')
+        plt.savefig('Ch2_images/msk_mod_im2')
+
+        plt.figure(2)
+        plt.clf()
+        plt.plot(t,s_t,'--')
+        plt.xlim(-Tb,20*Tb)
+        plt.title('s(t)')
+        plt.savefig('Ch2_images/msk_mod_im3')
+
+
+# MSK demodulator
+def msk_demod(r,N,fc,OF):
+
+    '''
+    MSK demodulator
+    Parameters:
+        r: received signal at the receiver front end
+        N: number of symbols transmitted
+        fc: carrier frequency in Hz
+        OF: oversampling factor (at least 4 is better)
+    Returns:
+        a_hat: detected binary stream
+    '''
+
+    
+

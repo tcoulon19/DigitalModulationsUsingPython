@@ -411,7 +411,7 @@ def cpfsk():
     plt.ylabel('s(t)')
     plt.savefig('Ch2_images/cpfsk_im3')
 
-cpfsk()
+
 
 
 
