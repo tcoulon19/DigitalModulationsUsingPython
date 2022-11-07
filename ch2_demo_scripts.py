@@ -304,6 +304,49 @@ def oqpsk():
     plt.savefig('Ch2_images/oqpsk')
 
 
+# DQPSK performance simulation
+def piby4_dqpsk():
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from passband_modulations import piBy4_dqpsk_mod, piBy4_dqpsk_demod
+    from channels import awgn
+    from scipy.special import erfc
+
+    N = 1000000 # Number of symbols to transmit
+    EbN0dB = np.arange(-4,11,2) # Eb/N0 range in dB for simulation
+    fc = 100 # Carrier frequency in Hz
+    OF = 8 # Oversampling factor, sampling frequency will be fs+OF*fc
+
+    BER = np.zeros(len(EbN0dB)) # For BER values for each Eb/N0
+
+    a = np.random.randint(2, size=N) # Uniform random symbols from 0s and 1s
+    result = piBy4_dqpsk_mod(a,fc,OF,enable_plot=True) # DQPSK modulation
+    s = result['s(t)'] # Get values from returned dictionary
+
+    for i,EbN0 in enumerate(EbN0dB):
+
+        # Compute and add AWGN noise
+        r = awgn(s,EbN0,OF) # Refer Chapter section 4.1
+        a_hat = piBy4_dqpsk_demod(r,fc,OF,enable_plot=True)
+        BER[i] = np.sum(a != a_hat)/N # Bit Error Rate Computation
+
+    #--------Theoretical Bit Error Rate--------
+    x = np.sqrt(4*10**(EbN0dB/10))*np.sin(np.pi/(4*np.sqrt(2)))
+    theoreticalBER = .5*erfc(x/np.sqrt(2))
+
+    #--------Plot performance curve--------
+    plt.figure(7)
+    plt.clf()
+    plt.semilogy(EbN0dB,BER,'k*',label='Simulated')
+    plt.semilogy(EbN0dB,theoreticalBER,'r-',label='Theoretical')
+    plt.xlabel('$E_b/N_0$ (dB)')
+    plt.ylabel('Probability of Bit Error - $P_b$')
+    plt.title('Probability of Bit Error for $\pi/4$-DQPSK')
+    plt.legend()
+    plt.savefig('Ch2_images/')
+
+
 
 
 
