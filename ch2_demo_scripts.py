@@ -23,6 +23,7 @@ def BPSK_performance():
         # Waveforms at the transmitter
         
         plt.figure(0)
+        plt.clf()
         plt.plot(t, s_bb) # Baseband wfm zoomed to first 10 bits
         plt.xlabel('t(s)')
         plt.ylabel('$s_{bb}(t)$-baseband')
@@ -31,6 +32,7 @@ def BPSK_performance():
         plt.savefig('Ch2_images/BPSK_performance_im1.png')
 
         plt.figure(1)
+        plt.clf()
         plt.plot(t, s) # Transmitted wfm zoomed to first 10 bits
         plt.xlabel('t(s)')
         plt.ylabel('s(t)-with carrier')
@@ -39,6 +41,7 @@ def BPSK_performance():
         plt.savefig('Ch2_images/BPSK_performance_im2.png')
 
         plt.figure(2)
+        plt.clf()
         plt.plot(np.real(s_bb), np.imag(s_bb), 'o')
         plt.xlim(-1.5,1.5)
         plt.ylim(-1.5,1.5)
@@ -58,6 +61,7 @@ def BPSK_performance():
             if EbN0 == 10:
 
                 plt.figure(3)
+                plt.clf()
                 plt.plot(t,r)
                 plt.xlabel('t(s)')
                 plt.ylabel('r(t)')
@@ -66,6 +70,7 @@ def BPSK_performance():
                 plt.savefig('Ch2_images/BPSK_performance_im4.png')
 
                 plt.figure(4)
+                plt.clf()
                 plt.plot(16*np.arange(N),ak_hat)
                 plt.xlabel('t(s)')
                 plt.ylabel('ak_hat')
@@ -78,13 +83,14 @@ def BPSK_performance():
         
         #----------Plots----------
         plt.figure(5)
+        plt.clf()
         plt.semilogy(EbN0dB, BER, 'k*', label='Simulated') # Simulated BER
         plt.semilogy(EbN0dB, theoreticalBER, 'r-', label='Theoretical')
         plt.xlabel('$E_b/N_0$ (dB)')
         plt.ylabel('Probability of Bit Error - $P_b$')
         plt.title('Probability of Bit Error for BPSK modulation')
         plt.savefig('Ch2_images/BPSK_performance_im6.png')
-BPSK_performance()
+
 
 # Coherent detection of DEBPSK
 def DEBPSK_performance():
@@ -359,6 +365,53 @@ def piby4_dqpsk():
     plt.title('Probability of Bit Error for $\pi/4$-DQPSK')
     plt.legend()
     plt.savefig('Ch2_images/piby4_dqpsk.png')
+
+
+# Binary CPFSK modulation
+def cpfsk():
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy.signal import lfilter
+
+    L = 50 # Oversampling factor
+    Tb = .5 # Bit period in seconds
+    fs = L/Tb # Sampling frequency in Hz
+    fc = 2/Tb # Carrier frequency
+    N = 8 # Number of bits to transmit
+    h = 1 # Modulation index
+
+    b = 2*np.random.randint(2, size=N) - 1 # Random information sequence in +1/-1 format
+    b = np.tile(b, (L,1)).flatten('F')
+    b_integrated = lfilter([1.0],[1.0,-1.0],b)/fs # Integrate b using filter
+
+    theta = np.pi*h/Tb*b_integrated
+    t=np.arange(0,Tb*N,1/fs) # Time base
+
+    s = np.cos(2*np.pi*fc*t + theta) # CPFSK signal
+
+    plt.figure(0)
+    plt.clf()
+    plt.plot(t,b)
+    plt.xlabel('t')
+    plt.ylabel('b(t)')
+    plt.savefig('Ch2_images/cpfsk_im1')
+
+    plt.figure(1)
+    plt.clf()
+    plt.plot(t,theta)
+    plt.xlabel('t')
+    plt.ylabel('$\theta(t)$')
+    plt.savefig('Ch2_images/cpfsk_im2')
+
+    plt.figure(2)
+    plt.clf()
+    plt.plot(t,s)
+    plt.xlabel('t')
+    plt.ylabel('s(t)')
+    plt.savefig('Ch2_images/cpfsk_im3')
+
+cpfsk()
 
 
 
