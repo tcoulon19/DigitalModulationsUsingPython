@@ -264,7 +264,7 @@ def qpsk():
     plt.title('Probability of Bit Error for QPSK modulation')
     plt.legend()
     plt.savefig('Ch2_images/qpsk')
-
+qpsk()
 
 # Waveform simulation performance of OQPSK
 def oqpsk():
@@ -360,7 +360,6 @@ def piby4_dqpsk():
     plt.legend()
     plt.savefig('Ch2_images/piby4_dqpsk.png')
 
-oqpsk()
 
 
 
