@@ -348,7 +348,7 @@ def piby4_dqpsk():
     #--------Theoretical Bit Error Rate--------
     x = np.sqrt(4*10**(EbN0dB/10))*np.sin(np.pi/(4*np.sqrt(2)))
     theoreticalBER = .5*erfc(x/np.sqrt(2))
-
+    
     #--------Plot performance curve--------
     plt.figure(7)
     plt.clf()

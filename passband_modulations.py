@@ -352,7 +352,7 @@ def piBy4_dqpsk_mod(a,fc,OF,enable_plot=False):
             V(t): differentially coded Q-channel waveform (no carrier)
             t: time base
     '''
-    (u,v) = piBy4_dqpsk_diff_encoding(a) # Differential encoding for pi/4-DQPSK
+    (u,v) = piBy4_dqpsk_diff_encoding(a,enable_plot=True) # Differential encoding for pi/4-DQPSK
     # Waveform formation (similar to conventional QPSK)
     L = 2*OF # Number of samples in each symbol (QPSK has 2 bits/symbol)
     U = np.tile(u, (L,1)).flatten('F') # Odd bit stream at 1/2Tb baud
@@ -439,7 +439,7 @@ def piBy4_dqpsk_diff_decoding(w,z):
 
 
 # pi/4 -- DQPSK demodulator
-def piBy4_dqpsk_demod(r,fc,OF,enable_plot=True):
+def piBy4_dqpsk_demod(r,fc,OF,enable_plot=False):
     
     import matplotlib.pyplot as plt
 
@@ -471,3 +471,5 @@ def piBy4_dqpsk_demod(r,fc,OF,enable_plot=True):
         plt.plot(w,z,'o')
         plt.title('Constellation')
         plt.savefig('Ch2_images/piBy4_dqpsk_demod')
+
+    return a_cap
