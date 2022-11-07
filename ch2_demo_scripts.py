@@ -243,7 +243,12 @@ def qpsk():
 
         # Compute and add AWGN noise
         r = awgn(s,EbN0,OF) # Refer Chapter section 4.1
-        a_hat = qpsk_demod(r,fc,OF,enable_plot=True) # QPSK demodulation
+        
+        if EbN0 == 10:
+            a_hat = qpsk_demod(r,fc,OF,enable_plot=True) # QPSK demodulation
+        else:
+            a_hat = qpsk_demod(r,fc,OF,enable_plot=False)
+
         BER[i] = np.sum(a != a_hat)/N # Bit error rate computation
 
     #--------Theoretical bit error rate--------
@@ -286,7 +291,11 @@ def oqpsk():
         # Compute and add AWGN noise
         r = awgn(s, EbN0, OF) # Refer Chapter section 4.1
 
-        a_hat = oqpsk_demod(r,N,fc,OF,enable_plot=True) # OQPSK demodulation
+        if EbN0 == 10:
+            a_hat = oqpsk_demod(r,N,fc,OF,enable_plot=True) # OQPSK demodulation
+        else:
+            a_hat = oqpsk_demod(r,N,fc,OF,enable_plot=False)
+        
         BER[i] = np.sum(a != a_hat)/N # Bit Error Rate Computation
 
     #--------Theoretical bit error rate--------
@@ -328,7 +337,12 @@ def piby4_dqpsk():
 
         # Compute and add AWGN noise
         r = awgn(s,EbN0,OF) # Refer Chapter section 4.1
-        a_hat = piBy4_dqpsk_demod(r,fc,OF,enable_plot=True)
+
+        if EbN0 == 10:
+            a_hat = piBy4_dqpsk_demod(r,fc,OF,enable_plot=True)
+        else:
+            a_hat = piBy4_dqpsk_demod(r,fc,OF,enable_plot=False)
+        
         BER[i] = np.sum(a != a_hat)/N # Bit Error Rate Computation
 
     #--------Theoretical Bit Error Rate--------
@@ -344,7 +358,9 @@ def piby4_dqpsk():
     plt.ylabel('Probability of Bit Error - $P_b$')
     plt.title('Probability of Bit Error for $\pi/4$-DQPSK')
     plt.legend()
-    plt.savefig('Ch2_images/')
+    plt.savefig('Ch2_images/piby4_dqpsk.png')
+
+piby4_dqpsk()
 
 
 
