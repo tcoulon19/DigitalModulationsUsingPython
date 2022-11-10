@@ -454,8 +454,54 @@ def msk():
     plt.savefig('Ch2_images/msk.png')
 
 
+# Raised cosine pulses in time and frequency domain
+def raisedCosineDemo():
 
+    '''
+    Raised cosine pulses and their manifestation in frequency domain
+    '''
+    import matplotlib.pyplot as plt
+    from scipy.fftpack import fft, fftshift
+    import numpy as np
+    from pulseshapers import raisedCosineDesign
 
+    Tsym = 1 # Symbol duration in seconds
+    L = 32 # Oversampling rate, each symbol contains L samples
+    span = 10 # Filter span in symbols
+    alphas = [0,.3,.5,1] # RC roll-off factors -- valid range from 0 to 1
+    Fs = L/Tsym # Sampling frequency
+
+    lineColors = ['b','r','g','k']
+
+    for i, alpha in enumerate(alphas):
+
+        b = raisedCosineDesign(alpha,span,L) # RC pulse design
+
+        # Time base for symbol duration
+        t = Tsym*np.arange(-span/2,span/2+1/L,1/L)
+
+        # Plot time domain view
+        plt.figure(0)
+        plt.plot(t,b,lineColors[i],label='$alpha$='+str(alpha))
+
+        # Compute FFT and plot double sided frequency domain view
+        NFFT = 1 << (len(b)-1).bit_length() # Set FFT length = nextpower2(len(b))
+        vals = fftshift(fft(b,NFFT))
+        freqs = Fs*np.arange(-NFFT/2,NFFT/2)/NFFT
+        plt.figure(1)
+        plt.plot(freqs, abs(vals)/abs(vals[len(vals)//2]), lineColors[i], label='$\alpha$='+str(alpha))
+    
+    plt.figure(0)
+    plt.title('Raised cosine pulse')
+    plt.legend()
+    plt.savefig('Ch2_images/raisedCosineDemo_im1.png')
+
+    plt.figure(1)
+    plt.title('Frequency response')
+    plt.legend()
+    plt.savefig('Ch2_images/raisedCosineDemo_im2.png')
+
+        
 
 
 
