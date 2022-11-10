@@ -489,7 +489,7 @@ def raisedCosineDemo():
         vals = fftshift(fft(b,NFFT))
         freqs = Fs*np.arange(-NFFT/2,NFFT/2)/NFFT
         plt.figure(1)
-        plt.plot(freqs, abs(vals)/abs(vals[len(vals)//2]), lineColors[i], label='$\alpha$='+str(alpha))
+        plt.plot(freqs, abs(vals)/abs(vals[len(vals)//2]), lineColors[i], label='$alpha$='+str(alpha))
     
     plt.figure(0)
     plt.title('Raised cosine pulse')
@@ -498,9 +498,11 @@ def raisedCosineDemo():
 
     plt.figure(1)
     plt.title('Frequency response')
+    plt.xlim(-3,3)
     plt.legend()
     plt.savefig('Ch2_images/raisedCosineDemo_im2.png')
 
+raisedCosineDemo()
         
 
 
