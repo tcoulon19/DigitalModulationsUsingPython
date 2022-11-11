@@ -1,3 +1,4 @@
+# Generate filter coefficients of raised cosine
 def raisedCosineDesign(alpha, span,L):
 
     import numpy as np
@@ -23,6 +24,32 @@ def raisedCosineDesign(alpha, span,L):
     p[np.argwhere(np.isinf(p))] = (alpha/2)*np.sin(np.divide(np.pi,(2*alpha)))
 
     return p
+
+
+# Generate filter coefficients of Gaussian LPF
+def gaussianLPF(BT,Tb,L,k):
+
+    import numpy as np
+
+    '''
+    Generate filter coefficients of Gaussian low pass filter (used in gmsk_mod)
+    Parameters:
+        BT: BT product -- Bandwidth * bit period
+        Tb: bit period
+        L: oversampling factor (number of samples per bit)
+        k: span length of the pulse (bit interval)
+    Returns:
+        h_norm: normalized filter coefficients of Gaussian LPF
+    '''
+    B = BT/Tb # bandwidth of the filter
+    # Truncated time limits for the filter
+    t = np.arange(-k*Tb,k*Tb+Tb/L, step=Tb/L)
+    h = B*np.sqrt(2*np.pi/(np.log(2)))*np.exp(-2*(t*np.pi*B)**2/(np.log(2)))
+    h_norm = h/np.sum(h)
+
+    return h_norm
+    
+
 
     
     
