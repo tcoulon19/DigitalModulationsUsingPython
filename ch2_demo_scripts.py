@@ -565,6 +565,8 @@ def constellations():
     plt.ylabel('Q(t)')
     plt.savefig('Ch2_images/constellations_im4')
 
+constellations()
+
 
         
 
