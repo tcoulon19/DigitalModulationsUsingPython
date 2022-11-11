@@ -589,4 +589,104 @@ def msk_demod(r,N,fc,OF):
     return a_hat
 
 
+# Implementation of GMSK modulator
+def gmsk_mod(a,fc,L,BT,enable_plot=False):
+
+    '''
+    Function to modulate a binary stream using GMSK
+        BT: BT product (bandwidth*bit period) for GMSK
+        a: input binary data stream (0s and 1s) to modulate
+        fc: RF carrier frequency in Hz
+        L: oversampling factor
+        enable_plot: True = plot transmitter waveforms (default False)
+    Returns:
+        (s_t,s_complex): tuple containing the following variables
+            s_t: GMSK modulated signal with carrier s(t)
+            s_complex: baseband GMSK signal (I+jQ)
+    '''
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy.signal import upfirdn, lfilter
+    from pulseshapers import gaussianLPF
+
+    fs = L*fc; Ts=1/fs; Tb = L*Ts; # Derived waveform timing parameters
+    c_t = upfirdn(h=[1]*L, x=2*a-1, up=L) # NRZ pulse train c(t)
+
+    k=1 # Truncation length for Gaussian LPF
+    h_t = gaussianLPF(BT,Tb,L,k) # Gaussian LPF with BT=.25
+    b_t = np.convolve(h_t,c_t,'full') # Convolve c(t) with Gaussian LPF to get b(t)
+    bnorm_t = b_t/max(abs(b_t)) # Normalize the output of Gaussian LPF to +/-1
+
+    h = .5 # Modulation index (peak-to-peak frequency deviation / bit rate)
+    # Integrate to get phase information
+    phi_t = lfilter(b=[1],a=[1,-1], x=bnorm_t*Ts) * h*np.pi/Tb
+
+    I = np.cos(phi_t)
+    Q = np.sin(phi_t) # Cross-correlated baseband I/Q signals
+    s_complex = I - 1j*Q # Complex baseband representation
+    t = Ts*np.arange(0,len(I)) # Time base for RF carrier
+    sI_t = I*np.cos(2*np.pi*fc*t)
+    sQ_t = Q*np.sin(2*np.pi*fc*t)
+    s_t = sI_t + sQ_t # s(t) -- GMSK with RF carrier
+
+    if enable_plot:
+
+        plt.figure(0)
+        plt.clf()
+        plt.plot(np.arange(0,len(c_t))*Ts,c_t)
+        plt.xlim(0,40*Tb)
+        plt.title('c(t)')
+        plt.savefig('Ch2_images/gmsk_mod_im1')
+
+        plt.figure(1)
+        plt.clf()
+        plt.plot(np.arange(-k*Tb,k*Tb+Ts,Ts),h_t)
+        plt.title('$h(t): BT_b$='+str(BT))
+        plt.savefig('Ch2_images/gmsk_mod_im2')
+        
+        plt.figure(2)
+        plt.clf()
+        plt.plot(t,I,'--')
+        plt.plot(t,sI_t,'r')
+        plt.xlim(0,10*Tb)
+        plt.title('$I(t)cos(2 pi f_c t)$')
+        plt.savefig('Ch2_images/gmsk_mod_im3')
+
+        plt.figure(3)
+        plt.clf()
+        plt.plot(t,Q,'--')
+        plt.plot(t,sQ_t,'r')
+        plt.xlim(0,10*Tb)
+        plt.title('$Q(t)sin(2 pi f_c t)$')
+        plt.savefig('Ch2_images/gmsk_mod_im4')
+
+        plt.figure(4)
+        plt.clf()
+        plt.plot(np.arange(0,len(bnorm_t))*Ts,bnorm_t)
+        plt.xlim(0,40*Tb)
+        plt.title('b(t)')
+        plt.savefig('Ch2_images/gmsk_mod_im5')
+
+        plt.figure(5)
+        plt.clf()
+        plt.plot(np.arange(0,len(phi_t))*Ts, phi_t)
+        plt.title('$phi(t)$')
+        plt.savefig('Ch2_images/gmsk_mod_im6')
+
+        plt.figure(6)
+        plt.clf()
+        plt.plot(t,s_t)
+        plt.xlim(0,20*Tb)
+        plt.title('s(t)')
+        plt.savefig('Ch2_images/gmsk_mod_im7')
+
+        plt.figure(7)
+        plt.clf()
+        plt.plot(I,Q)
+        plt.title('Constellation')
+        plt.savefig('Ch2_images/gmsk_mod_im8')
+
+    return (s_t, s_complex)
+
+
 
