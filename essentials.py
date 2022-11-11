@@ -12,13 +12,10 @@ def plotWelchPSD(x, fs, fc, ax = None, color = 'b', label = None):
     indices = (f>=fc) & (f<4*fc) # to plot PSD from Fc to 4*Fc
     Pxx = Pxx[indices]/Pxx[indices][0] # normalize PSD w.r.t. Fc
 
-    plt.figure(1)
-    plt.plot(f[indices]-fc, 10*log10(Pxx))
-    plt.title('Welch plot')
-    plt.xlabel('Frequency (Hz)')
-    plt.ylabel('PSD (dB/Hz)')
-    plt.savefig('Ch1_images/welch_example_im2.png')
-
+    plt.figure(0)
+    plt.plot(f[indices]-fc, 10*log10(Pxx),label = label)
+    plt.legend()
+    
 
 # Convolution by brute force
 def conv_brute_force(x, h):

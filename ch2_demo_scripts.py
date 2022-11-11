@@ -585,15 +585,16 @@ def bpsk_qpsk_msk_psd():
     s_msk = msk_mod(a,fc,OF)['s(t)'] # MSK signal
 
     # Compute and plot PSDs for each of the modulated versions
-    plt.figure(1)
+    plt.figure(0)
     plt.clf()
     plotWelchPSD(s_bpsk,fs,fc,color='b',label='BPSK')
     plotWelchPSD(s_qpsk,fs,fc,color='r',label='QPSK')
     plotWelchPSD(s_msk,fs,fc,color='k',label='MSK')
     plt.xlabel('$f-f_c$')
     plt.ylabel('PSD (dB/Hz)')
-    plt.legend()
     plt.savefig('Ch2_images/bpsk_qpsk_msk_psd')
+
+bpsk_qpsk_msk_psd()
 
 
 
