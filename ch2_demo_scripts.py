@@ -594,7 +594,42 @@ def bpsk_qpsk_msk_psd():
     plt.ylabel('PSD (dB/Hz)')
     plt.savefig('Ch2_images/bpsk_qpsk_msk_psd')
 
-bpsk_qpsk_msk_psd()
+
+# GMSK PSD -- Welch spectrum estimation
+def gmsk_psd():
+
+    from passband_modulations import gmsk_mod
+    from essentials import plotWelchPSD
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    N = 10000 # Number of symbols to transmit
+    fc = 800 # Carrier freqeuncy in Hz
+    L = 16 # Oversampling factor, use L = Fs/Fc, where Fs >> 2*Fc
+    fs = L*fc
+    a = np.random.randint(2, size=N) # Uniform random symbols from 0s and 1s
+
+    # '_': Unused output variable
+    (s1, _) = gmsk_mod(a,fc,L,BT=.3) # BT_b=.3
+    (s2, _) = gmsk_mod(a,fc,L,BT=0.5) # BT_b=0.5
+    (s3 , _ ) = gmsk_mod(a,fc,L,BT=0.7) # BT_b=0.7
+    (s4 , _ ) = gmsk_mod(a,fc,L,BT=10000) # BT_b=very high (near infinity) value (MSK)
+
+    # Compute and plot PSDs for each of the modulated versions
+    plt.figure(0)
+    plt.clf()
+    plotWelchPSD(s1,fs,fc,color='r',label='$BT_b=0.3$')
+    plotWelchPSD(s2,fs,fc,color='b',label='$BT_b=0.5$')
+    plotWelchPSD(s3,fs,fc,color='m',label='$BT_b=0.7$')
+    plotWelchPSD(s4,fs,fc,color='k',label='$BT_b=infinity$')
+    plt.xlabel('$f-f_c$')
+    plt.ylabel('PSD (dB/Hz)')
+    plt.savefig('Ch2_images/gmsk_psd')
+
+gmsk_psd()
+
+
+
 
 
 
