@@ -565,7 +565,36 @@ def constellations():
     plt.ylabel('Q(t)')
     plt.savefig('Ch2_images/constellations_im4')
 
-constellations()
+
+# PSD estimates of BPSK, QPSK, and MSK
+def bpsk_qpsk_msk_psd():
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from passband_modulations import bpsk_mod, qpsk_mod, msk_mod
+    from essentials import plotWelchPSD
+
+    N = 100000 # Number of symbols to transmit
+    fc = 800; OF = 8 # Carrier frequency and oversampling factor
+    fs = fc*OF # Sampling frequency
+
+    a = np.random.randint(2, size=N) # Uniform random symbols from 0s and 1s
+    (s_bb,t) = bpsk_mod(a,OF) # BPSK modulation (waveform) -- baseband
+    s_bpsk = s_bb*np.cos(2*np.pi*fc*t/fs) # BPSK with carrier
+    s_qpsk = qpsk_mod(a,fc,OF)['s(t)'] # Conventional QPSK
+    s_msk = msk_mod(a,fc,OF)['s(t)'] # MSK signal
+
+    # Compute and plot PSDs for each of the modulated versions
+    plt.figure(1)
+    plt.clf()
+    plotWelchPSD(s_bpsk,fs,fc,color='b',label='BPSK')
+    plotWelchPSD(s_qpsk,fs,fc,color='r',label='QPSK')
+    plotWelchPSD(s_msk,fs,fc,color='k',label='MSK')
+    plt.xlabel('$f-f_c$')
+    plt.ylabel('PSD (dB/Hz)')
+    plt.legend()
+    plt.savefig('Ch2_images/bpsk_qpsk_msk_psd')
+
 
 
         
