@@ -502,7 +502,70 @@ def raisedCosineDemo():
     plt.legend()
     plt.savefig('Ch2_images/raisedCosineDemo_im2.png')
 
-raisedCosineDemo()
+
+# Constellations of RC filtered QPSK and MSK
+def constellations():
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from passband_modulations import qpsk_mod, oqpsk_mod, piBy4_dqpsk_mod, msk_mod
+    from pulseshapers import raisedCosineDesign
+
+    N = 1000 # Number of symbols to transmit, keep it small and adequate
+    fc = 10; L = 8 # Carrier freq and oversampling factor
+    a = np.random.randint(2, size=N) # Unifrom random symbols from 0s and 1s
+
+    # Modulate the source symbols using QPSK, OQPSK, pi/4-DQPSK, and MSK
+    qpsk_result = qpsk_mod(a,fc,L)
+    oqpsk_result = oqpsk_mod(a,fc,L)
+    piby4dqpsk_result = piBy4_dqpsk_mod(a,fc,L)
+    msk_result = msk_mod(a,fc,L)
+
+    # Pulse shape the modulated waveforms by convolving with RC filter
+    alpha = .3; span = 10 # RC filter alpha and filter span in symbols
+    b = raisedCosineDesign(alpha, span, L) # RC pulse shaper
+    iRC_qpsk = np.convolve(qpsk_result['I(t)'],b,mode='valid') # RC - QPSK I(t)
+    qRC_qpsk = np.convolve(qpsk_result['Q(t)'],b,mode='valid') # RC - QPSK Q(t)
+    iRC_oqpsk = np.convolve(oqpsk_result['I(t)'],b,mode='valid') # RC - OQPSK I(t)
+    qRC_oqpsk = np.convolve(oqpsk_result['Q(t)'],b,mode='valid') # RC - OQPSK Q(t)
+    iRC_piby4dqpsk = np.convolve(piby4dqpsk_result['U(t)'],b,mode='valid') # pi/4-DQPSK I
+    qRC_piby4dqpsk = np.convolve(piby4dqpsk_result['V(t)'],b,mode='valid') # pi/4-DQPSK Q
+    i_msk = msk_result['sI(t)'] # MSK sI(t)
+    q_msk = msk_result['sQ(t)'] # MSK sQ(t)
+
+    plt.figure(0)
+    plt.clf()
+    plt.plot(iRC_qpsk,qRC_qpsk)
+    plt.title('QPSK, RC $alpha$='+str(alpha))
+    plt.xlabel('I(t)')
+    plt.ylabel('Q(t)')
+    plt.savefig('Ch2_images/constellations_im1')
+
+    plt.figure(1)
+    plt.clf()
+    plt.plot(iRC_oqpsk,qRC_oqpsk)
+    plt.title('OQPSK, RC $alpha$='+str(alpha))
+    plt.xlabel('I(t)')
+    plt.ylabel('Q(t)')
+    plt.savefig('Ch2_images/constellations_im2')
+
+    plt.figure(2)
+    plt.clf()
+    plt.plot(iRC_piby4dqpsk,qRC_piby4dqpsk)
+    plt.title('$pi$/4 - QPSK, RC $alpha$='+str(alpha))
+    plt.xlabel('I(t)')
+    plt.ylabel('Q(t)')
+    plt.savefig('Ch2_images/constellations_im3')
+
+    plt.figure(3)
+    plt.clf()
+    plt.plot(i_msk[20:-20],q_msk[20:-20])
+    plt.title('MSK')
+    plt.xlabel('I(t)')
+    plt.ylabel('Q(t)')
+    plt.savefig('Ch2_images/constellations_im4')
+
+
         
 
 
