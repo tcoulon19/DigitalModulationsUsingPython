@@ -635,7 +635,7 @@ def gmsk():
     from passband_modulations import gmsk_mod, gmsk_demod
     from channels import awgn
 
-    N=1000 # Number of symbols to transmit
+    N=100000 # Number of symbols to transmit
     EbN0dB = np.arange(0,19,2) # Eb/N0 range in dB for simulation
     BTs = [.1,.3,.5,1] # Gaussian LPF's BT products
     fc = 800 # Carrier frequency in Hz (must be < fs/2 and > fg)
@@ -647,7 +647,7 @@ def gmsk():
     plt.clf()
 
     for i, BT, in enumerate(BTs):
-        print(BT)
+        
         a = np.random.randint(2, size=N) # Uniform random symbols from 0s and 1s
         (s_t, s_complex) = gmsk_mod(a,fc,L,BT,enable_plot=True) # GMSK modulation
         BER = np.zeros(len(EbN0dB)) # For BER values for each Eb/N0
