@@ -626,7 +626,48 @@ def gmsk_psd():
     plt.ylabel('PSD (dB/Hz)')
     plt.savefig('Ch2_images/gmsk_psd')
 
-gmsk_psd()
+
+# Performance simulation of baseband GMSK
+def gmsk():
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from passband_modulations import gmsk_mod, gmsk_demod
+    from channels import awgn
+
+    N=1000 # Number of symbols to transmit
+    EbN0dB = np.arange(0,19,2) # Eb/N0 range in dB for simulation
+    BTs = [.1,.3,.5,1] # Gaussian LPF's BT products
+    fc = 800 # Carrier frequency in Hz (must be < fs/2 and > fg)
+    L = 16 # Oversampling factor
+
+    lineColors = ['g','b','k','r']
+
+    plt.figure(8)
+    plt.clf()
+
+    for i, BT, in enumerate(BTs):
+        print(BT)
+        a = np.random.randint(2, size=N) # Uniform random symbols from 0s and 1s
+        (s_t, s_complex) = gmsk_mod(a,fc,L,BT,enable_plot=True) # GMSK modulation
+        BER = np.zeros(len(EbN0dB)) # For BER values for each Eb/N0
+
+        for j, EbN0 in enumerate(EbN0dB):
+
+            r_complex = awgn(s_complex,EbN0) # Refer Chapter section 4.1
+            a_hat = gmsk_demod(r_complex,L) # Baseband GMSK demodulation
+            BER[j] = np.sum(a != a_hat)/N # Bit Error Rate Computation
+
+        plt.figure(8)
+        plt.semilogy(EbN0dB,BER,lineColors[i]+'*-', label = '$BT_b=$' + str(BT))
+
+    plt.title('Probability of Bit Error for GMSK modulation')
+    plt.xlabel('E_b/N_0 (dB)')
+    plt.ylabel('Probability of Bit Error - $P_b$')
+    plt.legend()
+    plt.savefig('Ch2_images/gmsk.png')
+
+gmsk()
 
 
 
