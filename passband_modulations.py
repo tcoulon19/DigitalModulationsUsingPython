@@ -784,7 +784,54 @@ def bfsk_coherent_demod(r_t,phase,fc,fd,L,fs):
 
     return a_hat
 
+
+# Square-law based non-coherent demodulator
+def bfsk_noncoherent_demod(r_t,fc,fd,L,fs):
+
+    '''
+    Non-coherent demodulation of BFSK modulated signal
+    Parameters:
+        r_t: BFSK modulated signal at the receiver r(t)
+        fc: center frequency of the carrier in Hz
+        fd: frequency separation measured from Fc
+        L: number of samples in 1-bit period
+        fs: sampling frequency for discrete-time simulation
+    Returns:
+        a_hat: data bits after demodulation
+    '''
+    t = np.arange(0,len(r_t))/fs # Time base
+    f1 = (fc+fd/2) 
+    f2 = (fc-fd/2)
+
+    # Define four basis functions
+    p1c = np.cos(2*np.pi*f1*t)
+    p2c = np.cos(2*np.pi*f2*t)
+    p1s = -1*np.sin(2*np.pi*f1*t)
+    p2s = -1*np.sin(2*np.pi*f2*t)
+
+    # Multiply and integrate from 0 to L
+    r1c = np.convolve(r_t*p1c,np.ones(L))
+    r2c = np.convolve(r_t*p2c,np.ones(L))
+    r1s = np.convolve(r_t*p1s,np.ones(L))
+    r2s = np.convolve(r_t*p2s,np.ones(L))
+
+    # Sample at every sampling instant
+    r1c = r1c[L-1::L]
+    r2c = r2c[L-1::L]
+    r1s = r1s[L-1::L]
+    r2s = r2s[L-1::L]
+
+    # Square and add
+    x = r1c**2 + r1s**2
+    y = r2c**2 + r2s**2
+    a_hat = ((x-y)>0).astype(int) # Compare and decide
+
+    return a_hat
+
     
+
+
+
 
 
 
