@@ -762,7 +762,10 @@ def bfsk_mod(a,fc,fd,L,fs,fsk_type='coherent', enable_plot=False):
         plt.xlim(0,.01)
         plt.savefig('Ch2_images/bfsk_mod_im2')
 
-    return (s_t,phase)
+    if fsk_type == 'noncoherent':
+        return (s_t,"NA")
+    else:
+        return (s_t,phase)
 
 
 # Coherent demodulator for coherent BFSK

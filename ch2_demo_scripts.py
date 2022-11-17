@@ -680,7 +680,7 @@ def bfsk():
     N = 100000 # Number of bits to transmit
     EbN0dB = np.arange(-4,11,2) # Eb/N0 range in dB for simulation
     fc = 400 # Carrier frequency f_c- integral multiple of 1/Tb
-    fsk_type = 'coherent' # Coherent/noncoherent FSK generation at Tx
+    fsk_type = 'noncoherent' # Coherent/noncoherent FSK generation at Tx
     h = 1 # Modulation index
     # h should be minimum .5 for coherent FSK or multiples of .5
     # h should be minimum 1 for non-coherent FSK or multiples of 1
