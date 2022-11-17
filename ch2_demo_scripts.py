@@ -667,7 +667,7 @@ def gmsk():
     plt.legend()
     plt.savefig('Ch2_images/gmsk.png')
 
-gmsk()
+
 
 
 
