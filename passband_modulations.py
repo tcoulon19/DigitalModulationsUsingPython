@@ -751,10 +751,12 @@ def bfsk_mod(a,fc,fd,L,fs,fsk_type='coherent', enable_plot=False):
     if enable_plot:
 
         plt.figure(0)
+        plt.clf()
         plt.plot(t,a_t)
         plt.savefig('Ch2_images/bfsk_mod_im1')
 
         plt.figure(1)
+        plt.clf()
         plt.plot(t,s_t)
         plt.savefig('Ch2_images/bfsk_mod_im2')
 
