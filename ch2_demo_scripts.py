@@ -692,22 +692,22 @@ def bfsk():
     BER_noncoherent = np.zeros(len(EbN0dB)) # BER for non-coherent BFSK
 
     a = np.random.randint(2,size=N) # Uniform random symbols from 0s and 1s
-    [s_t,phase] = nfsk_mod(a,fc,fd,L,fs,fsk_type) # BFSK modulation
+    [s_t,phase] = bfsk_mod(a,fc,fd,L,fs,fsk_type, enable_plot=True) # BFSK modulation
 
     for i,EbN0 in enumerate(EbN0dB):
 
         r_t = awgn(s_t,EbN0,L) # Refer Chapter section 4.1
 
-        if fsk_type.lower() == 'coherent':
+        if fsk_type == 'coherent':
             
             # Coherent FSK should be demodulated coherently or non-coherently
             a_hat_coherent = bfsk_coherent_demod(r_t,phase,fc,fd,L,fs) # Coherent demod
             a_hat_noncoherent = bfsk_noncoherent_demod(r_t,fc,fd,L,fs) # Noncoherent demod
-
+            
             BER_coherent[i] = np.sum(a != a_hat_coherent)/N # BER for coherent case
             BER_noncoherent[i] = np.sum(a != a_hat_noncoherent)/N # BER for non-coherent
 
-        if fsk_type.lower() == 'noncoherent':
+        if fsk_type == 'noncoherent':
 
             # Non-coherent FSK can only be non-coherently demodulated
             a_hat_noncoherent = bfsk_noncoherent_demod(r_t,fc,fd,L,fs) # Noncoherent demod
@@ -716,8 +716,8 @@ def bfsk():
     # Theoretical BERs
     theory_coherent = .5*erfc(np.sqrt(10**(EbN0dB/10)/2)) # Theory BER - coherent
     theory_noncoherent = .5*np.exp(-10**(EbN0dB/10)/2) # Theory BER - non-coherent
-
-    if fsk_type.lower() == 'coherent':
+    
+    if fsk_type == 'coherent':
 
         plt.figure(2)
         plt.clf()
@@ -727,7 +727,7 @@ def bfsk():
         plt.semilogy(EbN0dB,theory_noncoherent,'b-',label='theory-noncoherent demod')
         plt.title('Performance of coherent BFSK modulation')
 
-    if fsk_type.lower() == 'noncoherent':
+    if fsk_type == 'noncoherent':
         
         plt.figure(2)
         plt.clf()
@@ -739,6 +739,8 @@ def bfsk():
     plt.ylabel('Probability of Bit Error - $P_b$')
     plt.legend()
     plt.savefig('Ch2_images/bfsk.png')
+
+bfsk()
 
     
 

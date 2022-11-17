@@ -735,7 +735,7 @@ def bfsk_mod(a,fc,fd,L,fs,fsk_type='coherent', enable_plot=False):
     a_t = upfirdn(h=[1]*L,x=a,up=L) # Data to waveform
     t = np.arange(0,len(a_t))/fs # Time base
 
-    if fsk_type.lower() == 'noncoherent':
+    if fsk_type == 'noncoherent':
         # Carrier 1 with random phase
         c1 = np.cos(2*np.pi*(fc+fd/2)*t+2*np.pi*np.random.random_sample())
         # Carrier 2 with random phase
@@ -753,11 +753,13 @@ def bfsk_mod(a,fc,fd,L,fs,fsk_type='coherent', enable_plot=False):
         plt.figure(0)
         plt.clf()
         plt.plot(t,a_t)
+        plt.xlim(0,.1)
         plt.savefig('Ch2_images/bfsk_mod_im1')
 
         plt.figure(1)
         plt.clf()
         plt.plot(t,s_t)
+        plt.xlim(0,.01)
         plt.savefig('Ch2_images/bfsk_mod_im2')
 
     return (s_t,phase)
