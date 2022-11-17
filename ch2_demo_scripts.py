@@ -668,6 +668,15 @@ def gmsk():
     plt.savefig('Ch2_images/gmsk.png')
 
 
+# Performance of coherent and non-coherent BFSK
+def bfsk():
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from passband_modulations import bfsk_mod, bfsk_coherent_demod, bfsk_noncoherent_demod
+    from channels 
+
+
 
 
 
