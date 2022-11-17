@@ -761,6 +761,32 @@ def bfsk_mod(a,fc,fd,L,fs,fsk_type='coherent', enable_plot=False):
     return (s_t,phase)
 
 
+# Coherent demodulator for coherent BFSK
+def bfsk_coherent_demod(r_t,phase,fc,fd,L,fs):
+
+    '''
+    Coherent demodulation of BFSK modulated signal
+    Parameters:
+        r_t: BFSK modulated signal at the receiver r(t)
+        phase: initial phase generated at the transmitter
+        fc: center frequency of the carrier in Hz
+        fd: frequency separation measured from Fc
+        L: number of samples in 1-bit period
+        fs: sampling frequency for discrete-time simulation
+    Returns:
+        a_hat: data bits after demodulation
+    '''
+
+    t = np.arange(0,len(r_t))/fs # Time base
+    x = r_t*(np.cos(2*np.pi*(fc+fd/2)*t+phase)-np.cos(2*np.pi*(fc-fd/2)*t+phase))
+    y = np.convolve(x,np.ones(L)) # Integrate/sum from 0 to L
+    a_hat = (y[L-1::L]>0).astype(int) # Sample at every sampling instant and detect
+
+    return a_hat
+
+    
+
+
 
 
 
