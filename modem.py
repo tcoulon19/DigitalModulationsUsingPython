@@ -88,7 +88,22 @@ class PAMModem(Modem):
         m = np.arange(0,M) # All information symbols m = {0,1,...,M-1}
         constellation = 2*m+1-M + 1j*0 # Reference constellation
         Modem.__init__(self, M, constellation, name='PAM') # Set the modem attributes
+
+
+class PSKModem(Modem):
+
+    # Derived class: PSKModem
+    def __init__(self,M):
+
+        # Generate reference constellation
+        m = np.arange(0,M) # All information symbols m = {0,1,...,M-1}
+        I = 1/np.sqrt(2)*np.cos(m/M*2*np.pi)
+        Q = 1/np.sqrt(2)*np.sin(m/M*2*np.pi)
+        constellation = I + 1j*Q # Reference constellation
+        Modem.__init__(self, M, constellation, name = 'PSK') # Set the modem attributes
+
         
+
 
 
     
