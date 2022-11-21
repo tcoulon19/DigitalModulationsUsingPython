@@ -102,7 +102,33 @@ class PSKModem(Modem):
         constellation = I + 1j*Q # Reference constellation
         Modem.__init__(self, M, constellation, name = 'PSK') # Set the modem attributes
 
+
+class QAMModem(Modem):
+
+    # Derived class: QAMModem
+    def __init__(self,M):
         
+        if (M==1) or (np.mod(np.log2(M),2)!=0): # M not an even power of 2
+            raise ValueError('Only square MQAM supported. M must be even power of 2')
+
+        n = np.arange(0,M) # Sequential address from 0 to M-1 (1xM dimension)
+        a = np.asarray([x^(x>>1) for x in n]) # Convert linear addresses to Gray code
+        D = np.sqrt(M).astype(int) # Dimension of K-Map - NxN matrix
+        a = np.reshape(a,(D,D)) # NxN gray coded matrix
+        oddRows = np.arange(1,D,2) # Identify alternate rows
+        a[oddRows,:] = np.fliplr(a[oddRows,:]) # Flip rows - KMap representation
+        nGray = np.reshape(a,(M)) # Reshape to 1xM - Gray code walk on KMap
+
+        # Construction of ideal M-QAM constellation from sqrt(M)-PAM
+        (x,y) = np.divmod(nGray,D) # Element-wise quotient and remainder
+        Ax = 2*x+1-D # PAM Amplitudes 2d+1-D - real axis
+        Ay = 2*y+1-D # PAM Amplitudes 2d+1-D - imag axis
+        constellation = Ax+1j*Ay
+        Modem.__init__(self, M, constellation, name = 'QAM') # Set the modem attributes
+        
+
+
+
 
 
 
