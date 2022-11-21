@@ -37,16 +37,17 @@ class Modem:
         if self.name.lower() == 'fsk':
             return 0 # FSK is multi-dimenstional, difficult to visualize
 
+        plt.figure(0)
         fig, axs = plt.subplots(1,1)
         axs.plot(np.real(self.constellation),np.imag(self.constellation),'o')
 
         for i in range(0,self.M):
-            axs.annotate("{0:0{1}b}".format(i,self.M), (np.real(self.constellation[i]), np.imag(self.constellation[i])))
+            axs.annotate("{0:0{1}b}".format(i,int(np.sqrt(self.M))), (np.real(self.constellation[i]), np.imag(self.constellation[i])))
 
         axs.set_title('Constellaton')
         axs.set_xlabel('I')
         axs.set_ylabel('Q')
-        fig.show()
+        fig.savefig('Ch3_images/plotConstellation.png')
 
     def modulate(self,inputSymbols):
 
@@ -171,7 +172,7 @@ class FSKModem(Modem):
             return np.argmax(np.abs(receivedSyms),axis=1)
         else:
             raise ValueError('Coherence must be \'coherent\' or \'noncoherent\'')
-            
+
 
 
 
