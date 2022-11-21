@@ -740,7 +740,7 @@ def bfsk():
     plt.legend()
     plt.savefig('Ch2_images/bfsk.png')
 
-bfsk()
+
 
     
 
