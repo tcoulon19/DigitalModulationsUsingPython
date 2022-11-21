@@ -99,11 +99,8 @@ class Modem:
         d = cdist(XA, XB, metric='euclidean') # Compute pair-wise Euclidean distances
         detectedSyms = np.argmin(d,axis=1) # Indices corresponding minimum Euclidean distance
         return detectedSyms
-        
+
          
-
-
-
 class PAMModem(Modem):
 
     # Derived class: PAMModem
@@ -149,6 +146,23 @@ class QAMModem(Modem):
         Ay = 2*y+1-D # PAM Amplitudes 2d+1-D - imag axis
         constellation = Ax+1j*Ay
         Modem.__init__(self, M, constellation, name = 'QAM') # Set the modem attributes
+
+
+class FSKModem(Modem):
+
+    # Derived class: FSKModem
+    def __init__(self,M,coherence='coherent'):
+        
+        if coherence.lower()=='coherent':
+            phi = np.zeros(M) # Phase=0 for coherent detection
+        elif coherence.lower()=='noncoherent':
+            phi = 2*np.pi*np.random.rand(M) # M random phases in the (0,2pi)
+        else:
+            raise ValueError('Coherence must be \'coherent\' or \'noncoherent\'')
+        constellation = np.diag(np.ex(1j*phi))
+        Modem.__init__(self,M,constellation,name='FSK',coherence=coherence.lower()) # Set the base modem attributes
+
+    def demodulate(self, receivedSyms, coherence = 'coherent'):
 
 
 
