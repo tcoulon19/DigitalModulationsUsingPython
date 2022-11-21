@@ -79,4 +79,16 @@ class Modem:
         Optimum Detector for 2-dim. signals (ex: MQAM,MPSK,MPAM) in IQ plane
         '''
 
+
+class PAMModem(Modem):
+
+    # Derived class: PAMModem
+    def __init__(self,M):
+
+        m = np.arange(0,M) # All information symbols m = {0,1,...,M-1}
+        constellation = 2*m+1-M + 1j*0 # Reference constellation
+        Modem.__init__(self, M, constellation, name='PAM') # Set the modem attributes
+        
+
+
     
