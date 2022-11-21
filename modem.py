@@ -164,7 +164,14 @@ class FSKModem(Modem):
 
     def demodulate(self, receivedSyms, coherence = 'coherent'):
 
-
+        # Overridden method in Modem class
+        if coherence.lower() == 'coherent':
+            return self.iqDetector(receivedSyms)
+        elif coherence.lower() == 'noncoherent':
+            return np.argmax(np.abs(receivedSyms),axis=1)
+        else:
+            raise ValueError('Coherence must be \'coherent\' or \'noncoherent\'')
+            
 
 
 
