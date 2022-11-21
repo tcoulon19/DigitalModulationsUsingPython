@@ -4,10 +4,10 @@ def modem_demo():
     from modem import PSKModem, QAMModem
 
     M = 16 # 16 points in the constellation
-    qamModem = QAMModem(M) # Create a 16-PSK modem object
+    qamModem = QAMModem(M) # Create a 16-QAM modem object
     qamModem.plotConstellation() # Plot ideal constellation for this modem
 
-    nSym = 10 # 10 symbols as input to PSK modem
+    nSym = 10 # 10 symbols as input to QAM modem
     inputSyms = np.random.randint(low=0, high=M, size=nSym) # Uniform random symbols from 0 to M-1
     print('inputSyms: ' + str(inputSyms))
 
