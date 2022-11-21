@@ -77,7 +77,31 @@ class Modem:
     def iqDetector(self,receivedSyms):
         '''
         Optimum Detector for 2-dim. signals (ex: MQAM,MPSK,MPAM) in IQ plane
+        Note: MPAM/BPSK are one dimensional modulations. The same function can be
+        applied for these modulations since quadrature is zero (Q=0)
+
+        The function computes the pair-wise Euclidean distance of each point in the 
+        received vector against every point in the reference constellation. It then
+        returns the symbols from the reference constellation that provide the 
+        minimum Euclidean distance.
+
+        Parameters:
+            receivedSyms: received symbol vector of complex form
+        Returns:
+            detectedSyms: decoded symbols that provide minimum Euclidean distance
         '''
+        from scipy.spatial.distance import cdist
+
+        # Received vector and reference in cartesian form
+        XA = np.column_stack((np.real(receivedSyms),np.imag(receivedSyms)))
+        XB = np.column_stack((np.real(self.constellation),np.imag(self.constellation)))
+
+        d = cdist(XA, XB, metric='euclidean') # Compute pair-wise Euclidean distances
+        detectedSyms = np.argmin(d,axis=1) # Indices corresponding minimum Euclidean distance
+        return detectedSyms
+        
+         
+
 
 
 class PAMModem(Modem):
@@ -125,7 +149,7 @@ class QAMModem(Modem):
         Ay = 2*y+1-D # PAM Amplitudes 2d+1-D - imag axis
         constellation = Ax+1j*Ay
         Modem.__init__(self, M, constellation, name = 'QAM') # Set the modem attributes
-        
+
 
 
 
