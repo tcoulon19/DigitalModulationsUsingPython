@@ -31,3 +31,19 @@ def ser_awgn(EbN0dBs, mod_type=None, M=0, coherence=None):
         return func_dict[mod_type.lower()](M,gamma_s,coherence)
     else:
         return func_dict[mod_type.lower{}](M,gamma_s) # Call appropriate function
+
+
+def psk_awgn(M,gamma_s):
+    gamma_b = gamma_s/log2(M)
+    if (M==2):
+        SERs = .5*erfc(sqrt(gamma_b))
+    elif M==4:
+        Q = .5*erfc(sqrt(gamma_b))
+        SERs = 2*Q-Q**2
+    else:
+        SERs = erfc(sqrt(gamma_s)*sin(pi/M))
+    return SERs
+
+
+def qam_awgn(M,gamma_s):
+    if (M==1) or (np.mod(np.log2(M),2)!=0): # M not an even power of 2
