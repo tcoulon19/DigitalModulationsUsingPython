@@ -35,4 +35,23 @@ def awgnPerformance():
             modem=modem_dict[mod_type.lower()](M) # Choose modem from dictionary
         modulatedSyms = modem.modulate(inputSyms) # Modulate
 
+        for j,EsN0dB in enumerate(EsN0dBs):
+
+            receivedSyms = awgn(modulatedSyms, EsN0dB) # Ad awgn noise
+
+            if mod_type.lower() == 'fsk': # Demodulate (Refer Chapter 3)
+                detectedSyms = modem.demodulate(receivedSyms,coherence)
+            else: # Demodulate (Refer Chapter 2)
+                detectedSyms = modem.demodulate(receivedSyms)
+
+            SER_sim[j] = np.sum(detectedSyms != inputSyms)/nSym
+
+        SER_theory = ser_awgn(EbN0dBs, mod_type, M, coherence) # Theory SER
+        ax.semilogy(EbN0dBs, SER_sim, color=colors[i], marker='o', linestyle = '', label = 'Sim'+str(M)+'-'+mod_type.upper())
+        ax.semilogy(EbN0dBs, SER_theory, color=colors[i], linestyle = '-', label='Theory'+str(M)+'-'+mod_type.upper())
+
+        ax.set_xlabel('Eb/N0(dB)'); ax.set_ylabel('SER ($P_s$)')
+        ax.set_title('Probability of Symbol Error for M-'+str(mod_type)+' over AWGN')
+        ax.legend(); fig.show()
         
+                
