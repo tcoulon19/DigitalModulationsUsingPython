@@ -28,3 +28,11 @@ def awgnPerformance():
         SER_sim = np.zeros(len(EbN0dBs)) # Simulated symbol error rates
         inputSyms = np.random.randint(low=0, high=M, size=nSym)
         # Uniform random symbols from 0 to M-1
+
+        if mod_type.lower() == 'fsk':
+            modem=modem_dict[mod_type.lower()](M,coherence) # Choose modem from dictionary
+        else: # For all other modulations
+            modem=modem_dict[mod_type.lower()](M) # Choose modem from dictionary
+        modulatedSyms = modem.modulate(inputSyms) # Modulate
+
+        
