@@ -30,7 +30,7 @@ def ser_awgn(EbN0dBs, mod_type=None, M=0, coherence=None):
     if mod_type.lower() == 'fsk': # Call appropriate function
         return func_dict[mod_type.lower()](M,gamma_s,coherence)
     else:
-        return func_dict[mod_type.lower{}](M,gamma_s) # Call appropriate function
+        return func_dict[mod_type](M,gamma_s) # Call appropriate function
 
 
 def psk_awgn(M,gamma_s):

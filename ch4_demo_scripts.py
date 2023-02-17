@@ -53,5 +53,7 @@ def awgnPerformance():
         ax.set_xlabel('Eb/N0(dB)'); ax.set_ylabel('SER ($P_s$)')
         ax.set_title('Probability of Symbol Error for M-'+str(mod_type)+' over AWGN')
         ax.legend(); fig.show()
-        
-                
+
+awgnPerformance()
+
+

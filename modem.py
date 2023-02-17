@@ -160,7 +160,7 @@ class FSKModem(Modem):
             phi = 2*np.pi*np.random.rand(M) # M random phases in the (0,2pi)
         else:
             raise ValueError('Coherence must be \'coherent\' or \'noncoherent\'')
-        constellation = np.diag(np.ex(1j*phi))
+        constellation = np.diag(np.exp(1j*phi))
         Modem.__init__(self,M,constellation,name='FSK',coherence=coherence.lower()) # Set the base modem attributes
 
     def demodulate(self, receivedSyms, coherence = 'coherent'):
