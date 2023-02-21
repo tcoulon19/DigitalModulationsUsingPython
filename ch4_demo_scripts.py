@@ -11,7 +11,7 @@ def awgnPerformance():
     #--------Input Fields--------
     nSym = 10**6 # Number of symbols to transmit
     EbN0dBs = np.arange(-4,12,2) # Eb/N0 range in dB for simulation
-    mod_type = 'FSK' # Set 'PSK' or 'QAM' or 'FSK'
+    mod_type = 'psk' # Set 'PSK' or 'QAM' or 'FSK'
     arrayOfM = [2,4,8,16,32] # Array of M values to simulate
     #arrayOfM = [4,16,64,256] # Uncomment this line if MOD_TYPE='QAM'
     coherence = 'coherent' # 'coherent'/'noncoherent'-only for FSK
@@ -24,7 +24,7 @@ def awgnPerformance():
 
         #--------Initialization of various parameters--------
         k = np.log2(M)
-        EsN0dBs = 10*np.log10(k)*EbN0dBs # EsN0dB calculation
+        EsN0dBs = 10*np.log10(k)+EbN0dBs # EsN0dB calculation
         SER_sim = np.zeros(len(EbN0dBs)) # Simulated symbol error rates
         inputSyms = np.random.randint(low=0, high=M, size=nSym)
         # Uniform random symbols from 0 to M-1
@@ -52,7 +52,7 @@ def awgnPerformance():
 
         ax.set_xlabel('Eb/N0(dB)'); ax.set_ylabel('SER ($P_s$)')
         ax.set_title('Probability of Symbol Error for M-'+str(mod_type)+' over AWGN')
-        ax.legend(); fig.show()
+        ax.legend(); fig.savefig("ch4_images/fig.png")
 
 awgnPerformance()
 
