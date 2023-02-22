@@ -79,3 +79,66 @@ def fsk_awgn(M_val,gamma_s_vals,coherence):
     else:
         raise ValueError('For FSK coherence must be \'coherent\' or \'noncoherent\'')
     return SERs
+
+
+
+def ser_rayleigh(EbN0dBs,mod_type=None,M=0):
+
+    '''
+    Theoretical Symbol Error Rates for various modulations over noise added Rayleigh flat-fading channel
+    Parameters:
+        EbN0dBs: List of SNR per bit values in dB scale
+        mod_type: 'psk', 'qam', 'pam'
+        M: Modulation level for the chosen modulation.
+            For psk, pam M can be any power of 2
+            For QAM M must be an even power of 2 (square QAM only)
+    Returns:
+        SERs = Symbol Error Rates
+    '''
+    if mod_type==None:
+        raise ValueError('Invalid value for mod_type')
+    if (M<2) or ((M & (M-1))!=0): # If M not a power of 2
+        raise ValueError('M should be a power of 2')
+    func_dict = {'psk': psk_rayleigh, 'qam': qam_rayleigh, 'pam': pam_rayleigh}
+    gamma_s_vals = log2(M)*(10**(EbN0dBs/10))
+    return func_dict[mod_type.lower()](M,gamma_s_vals) # Call appropriate function
+
+def mgf_rayleigh(g, gamma_s): # MGF function for Rayleigh channel
+    fun = lambda x: 1/(1+(g*gamma_s/(sin(x)**2))) # MGF function
+    return fun
+
+def psk_rayleigh(M, gamma_s_vals):
+    gamma_b = gamma_s_vals/log2(M)
+    if (M==2):
+        SERs = .5*(1-sqrt(gamma_b/(1+gamma_b)))
+    else:
+        SERs = np.zeros(len(gamma_s_vals))
+        g = (sin(pi/M))**2
+        for i, gamma_s in enumerate(gamma_s_vals):
+            (y,_) = quad(mgf_rayleigh(g,gamma_s),0,pi*(M-1)/M) # integration
+            SERs[i] = (1/pi)*y
+    return SERs
+
+def qam_rayleigh(M,gamma_s_vals):
+    if (M==1) or (np.mod(np.log2(M),2)!=0): # M not an even ower of 2
+        raise ValueError('Only square MQAM supported. M must be an even power of 2.')
+    SERs = np.zeros(len(gamma_s_vals))
+    g = 1.5/(M-1)
+    for i, gamma_s in enumerate(gamma_s_vals):
+        fun = mgf_rayleigh(g,gamma_s) # MGF function
+        (y1,_) = quad(fun,0,pi/2) # Integration 1
+        (y2,_) = quad(fun,0,pi/4) # integration 2
+        SERs[i] = 4/pi*(1-1/sqrt(M))*y1-4/pi*(1-1/sqrt(M))**2*y2
+    return SERs
+
+def pam_rayleigh(M,gamma_s_vals):
+    SERs = np.zeros(len(gamma_s_vals))
+    g = 3/(M**2-1)
+    for i, gamma_s in enumerate(gamma_s_vals):
+        (y1,_) = quad(mgf_rayleigh(g,gamma_s),0,pi/2) # Integration
+        SERs[i] = 2*(M-1)/(M*pi)*y1
+    return SERs
+
+
+
+
