@@ -36,3 +36,20 @@ def awgn(s,SNRdB,L=1):
     r = s + n # received signal
     
     return r
+
+
+
+# Generating channel samples for Rayliegh flat-fading
+def rayleighFading(N):
+
+    '''
+    Generate Rayleigh flat-fading channel samples
+    Parameters:
+        N: Number of samples to generate
+    Returns:
+        abs_h: Rayleigh flat fading samples
+    '''
+
+    # 1 tap complect gaussian filter
+    h = 1/sqrt(2)*(standard_normal(N)+1j*standard_normal(N))
+    return abs(h)
