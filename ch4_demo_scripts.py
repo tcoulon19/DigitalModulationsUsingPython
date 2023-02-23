@@ -77,6 +77,16 @@ def rayleighPerformance():
     colors = plt.cm.jet(np.linspace(0,1,len(arrayOfM))) # Colormap
     fig, ax = plt.subplots(1,1)
 
-    
+    for i,M in enumerate(arrayOfM):
+
+        k = np.log2(M)
+        EsN0dBs = 10*np.log10(k)+EbN0dBs # EsN0dB calculation
+        SER_sim = np.zeros(len(EbN0dBs)) # Simulated Symbol error rates
+        # Uniform random symbols from 0 to M-1
+        inputSyms = np.random.randint(0,M,size=nSym)
+
+        modem = modem_dict[mod_type.lower()](M)
+
+
 
 
