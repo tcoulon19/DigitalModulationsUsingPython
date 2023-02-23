@@ -54,6 +54,29 @@ def awgnPerformance():
         ax.set_title('Probability of Symbol Error for M-'+str(mod_type)+' over AWGN')
         ax.legend(); fig.savefig("ch4_images/fig.png")
 
-awgnPerformance()
+
+
+def rayleighPerformance():
+
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from matplotlib import cm # Colormap
+    from scipy.special import erfc
+    from modem import PAMModem, PSKModem, QAMModem, FSKModem
+    from channels import awgn, rayleighFading
+    from errorRates import ser_rayleigh
+
+    #--------Input Fields--------
+    nSym = 10**6 # Number of symbols to transmit
+    EbN0dBs = np.arange(-4,12,2) # Eb/N0 range in dB for simulation
+    mod_type = 'PAM' # Set 'PSK' or 'QAM' or 'PAM'
+    arrayOfM = [2,4,8,16,32] # Array of M values to simulate
+    #arrayOfM = [4,16,64,256] # Uncomment this line for QAM
+
+    modem_dict = {'psk': PSKModem, 'qam': QAMModem, 'pam': PAMModem}
+    colors = plt.cm.jet(np.linspace(0,1,len(arrayOfM))) # Colormap
+    fig, ax = plt.subplots(1,1)
+
+    
 
 
