@@ -52,7 +52,7 @@ def awgnPerformance():
 
         ax.set_xlabel('Eb/N0(dB)'); ax.set_ylabel('SER ($P_s$)')
         ax.set_title('Probability of Symbol Error for M-'+str(mod_type)+' over AWGN')
-        ax.legend(); fig.savefig("ch4_images/fig.png")
+        ax.legend(); fig.savefig("ch4_images/awgnPerformance.png")
 
 
 
@@ -85,7 +85,30 @@ def rayleighPerformance():
         # Uniform random symbols from 0 to M-1
         inputSyms = np.random.randint(0,M,size=nSym)
 
-        modem = modem_dict[mod_type.lower()](M)
+        modem = modem_dict[mod_type.lower()](M) # Choose a modem from the dictionary
+        modulatedSyms = modem.modulate(inputSyms) # Modulate
+
+        for j,EsN0dB in enumerate(EsN0dBs):
+
+            h_abs = rayleighFading(nSym) # Rayleigh flat fading samples
+            hs = h_abs*modulatedSyms # Fading effect on modulated symbols
+            receivedSyms = awgn(hs,EsN0dB) # Add awgn noise
+
+            y = receivedSyms/h_abs # Decision vector
+            detectedSyms = modem.demodulate(y) # Demodulate
+            SER_sim[j] = np.sum(detectedSyms != inputSyms)/nSym
+
+        SER_theory = ser_rayleigh(EbN0dBs,mod_type,M) # Theory SER
+        ax.semilogy(EbN0dBs,SER_sim,color=colors[i], marker='o', linestyle='', label='Sim '+str(M)+'-'+mod_type.upper())
+        ax.semilogy(EbN0dBs,SER_theory,color=colors[i],linestyle='-',label='Theory '+str(M)+'-'+mod_type.upper())
+
+    ax.set_xlabel('Eb/N0(dB)'); ax.set_ylabel('SER ($P_s$)')
+    ax.set_title('Probability of Symbol Error for M-'+str(mod_type)+' over Rayleigh flat fading channel')
+    ax.legend(); fig.savefig('Ch4_images/rayleighPerformance.png')
+
+rayleighPerformance()
+
+
 
 
 
