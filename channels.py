@@ -53,3 +53,27 @@ def rayleighFading(N):
     # 1 tap complect gaussian filter
     h = 1/sqrt(2)*(standard_normal(N)+1j*standard_normal(N))
     return abs(h)
+
+
+
+# Generating channel samples for Rician flat-fading
+def ricianFading(K_dB, N):
+
+    '''
+    Generate Rician flat-fading channel samples
+    Parameters:
+        K_dB: Rician K factor in dB scale
+        N: Number of samples to generate
+    Returns:
+        abs_h: Rician flat fading samples
+    '''
+    K = 10**(K_dB/10) # K factor in linear scale
+    mu = sqrt(K/(2*(K+1))) # Mean
+    sigma = sqrt(1/(2*(K+1))) # Sigma
+    h = (sigma*standard_normal(N)+mu) + 1j*(sigma*standard_normal(N)+mu)
+    return abs(h)
+
+
+
+
+

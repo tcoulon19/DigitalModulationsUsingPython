@@ -106,7 +106,9 @@ def rayleighPerformance():
     ax.set_title('Probability of Symbol Error for M-'+str(mod_type)+' over Rayleigh flat fading channel')
     ax.legend(); fig.savefig('Ch4_images/rayleighPerformance.png')
 
-rayleighPerformance()
+
+
+    
 
 
 
