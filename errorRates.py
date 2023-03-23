@@ -141,4 +141,30 @@ def pam_rayleigh(M,gamma_s_vals):
 
 
 
+def ser_rician(K_dB, EbN0dBs, mod_type=None, M=0):
+
+    '''
+    Theoretical Symbol Error Rates for various modulations over noise added Rician flat-fading channel
+    Parameters:
+        K_dB: Rician K-factor in dB
+        EbN0dBs: List of SNR per bit values in dB scale
+        mod_type: 'PSK', 'QAM', 'PAM', 'FSK'
+        M: Modulation level for the chosen modulation.
+            For PSK,PAM M can be any power of 2.
+            For QAM M must be an even power of 2 (square QAM only)
+    Returns:
+        SERs = Symbol Error Rates
+    '''
+    if mod_type== None:
+        raise ValueError('Invalid value for mod_type')
+    if (M<2) or ((M & (M-1))!=0): # If M not a power of 2
+        raise ValueError('M should be a power of 2')
+    
+    func_dict = {'psk': psk_rician, 'qam': qam_rician, 'pam': pam_rician}
+    gamma_s_vals = log2(M)*(10**(EbN0dBs/10))
+    # Call appropriate function
+    return func_dict[mod_type.lower()](K_dB, M, gamma_s_vals)
+
+
+
 
