@@ -122,8 +122,8 @@ def ricianPerformance():
     nSym = 10**6 # Number of symbols to transmit
     EbN0dBs = np.arange(0,22,2) # Eb/N0 range in dB for simulation
     K_dBs = [3,5,10,20] # Array of K factors for Rician fading in dB
-    mod_type = 'PSK' # Set 'PSK' or 'QAM' or 'PAM'
-    M = 4 # M value for the modulation to simulate
+    mod_type = 'QAM' # Set 'PSK' or 'QAM' or 'PAM'
+    M = 64 # M value for the modulation to simulate
 
     modem_dict = {'psk': PSKModem, 'qam': QAMModem, 'pam': PAMModem}
     colors = plt.cm.jet(np.linspace(0,1,len(K_dBs))) # Colormap
@@ -152,9 +152,14 @@ def ricianPerformance():
         ax.semilogy(EbN0dBs,SER_sim,color=colors[i],marker='o',linestyle='',label='Sim K'+str(K_dB)+' dB')
         ax.semilogy(EbN0dBs,SER_theory,color=colors[i],linestyle='-',label='Thoery K='+str(K_dB)+' dB')
     
-    ax.set_xlabel('Eb/N0(dB)'); ax.set_ylabel('SER ($P_s$)')
+    ax.set_xlabel('Eb/N0(dB)'); ax.set_ylabel('SER ($P_s$)'); ax.set_ylim(10**-7,1)
     ax.set_title('Probability of Symbol Error for M-'+str(mod_type)+' over Rayleigh flat fading channel')
     ax.legend()
+    fig.savefig('Ch4_images/ricianPerformance.png')
+
+
+ricianPerformance()
+
 
 
 
