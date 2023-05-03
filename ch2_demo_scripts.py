@@ -1,6 +1,7 @@
 # Performance of BPSK using waveform simulation
 from re import T
-
+import time
+import multiprocessing as mp
 
 def BPSK_performance():
 
@@ -739,12 +740,6 @@ def bfsk():
     plt.ylabel('Probability of Bit Error - $P_b$')
     plt.legend()
     plt.savefig('Ch2_images/bfsk.png')
-
-
-
-
-    
-
 
 
 

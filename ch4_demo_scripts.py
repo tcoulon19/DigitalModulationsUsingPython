@@ -37,7 +37,7 @@ def awgnPerformance():
 
         for j,EsN0dB in enumerate(EsN0dBs):
 
-            receivedSyms = awgn(modulatedSyms, EsN0dB) # Ad awgn noise
+            receivedSyms = awgn(modulatedSyms, EsN0dB) # Add awgn noise
 
             if mod_type.lower() == 'fsk': # Demodulate (Refer Chapter 3)
                 detectedSyms = modem.demodulate(receivedSyms,coherence)
